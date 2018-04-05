@@ -26,7 +26,7 @@ def get_page_source():
 def datablogspider():
     html = get_page_source()
     page = BeautifulSoup(html, 'lxml')
-    # infos = page.select('.post-list > li > a > img')
+    infos = page.select('title')[0].get_text().split('_')[0]
     links = page.select('.post-list > li > a')
     # for info, link in zip(infos, links):
     for link in links:
@@ -36,7 +36,7 @@ def datablogspider():
             data = {
                 'articleUrl': link.get('href'),
                 # bug
-                'title': info.get('alt'),
+                'title': infos,
                 'author': details_blog['author'],
                 'source': details_blog['source'],
                 'publishtime_blog': details_blog['publishtime_blog'],

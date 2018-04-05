@@ -8,7 +8,7 @@ from multiprocessing import Pool
 # http://news.163.com/rank/
 def rankspider(url):
     links_list = []
-    pattern = re.compile(r'^http:\/\/[\w]+\.163\.com\/18\/\d+\/\d+\/\w+.html')
+    patterns = re.compile(r'^http:\/\/[\w]+\.163\.com\/18\/\d+\/\d+\/\w+.html')
     html = requests.get(url)
     htmlpage = BeautifulSoup(html.text, 'lxml')
     # 这是一个很好提取文章标题的方法,我咋忘记了,卧槽
@@ -18,7 +18,7 @@ def rankspider(url):
     for link in links:
         if link.get('href'):
             if re.search(pattern, link.get('href')):
-                re_links = re.search(pattern, link.get('href')).group(0)
+                re_links = re.search(patterns, link.get('href')).group(0)
                 links_list.append(re_links)
     for link in links_list:
         if details(link):

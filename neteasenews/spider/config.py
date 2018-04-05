@@ -1,6 +1,9 @@
 import pymongo
 import datetime
 from selenium import webdriver
+import re
+
+
 BASE_URL = 'http://news.163.com/'
 
 URLs = ['http://news.163.com/',
@@ -17,6 +20,38 @@ URLs = ['http://news.163.com/',
         'http://gov.163.com/',
         'http://gongyi.163.com/',
         'http://media.163.com/']
+
+pattern = re.compile(r'^http:\/\/[\w]+\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_news = re.compile(r'^http:\/\/news\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_money = re.compile(r'^http:\/\/money\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_auto = re.compile(r'^http:\/\/auto\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_tech = re.compile(r'^http:\/\/news\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_ent = re.compile(r'^http:\/\/tech\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_sports = re.compile(r'^http:\/\/sports\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_mobile = re.compile(r'^http:\/\/mobile\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_digi = re.compile(r'^http:\/\/digi\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_gz_house = re.compile(r'^http:\/\/gz\.house\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_home = re.compile(r'^http:\/\/home\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_edu = re.compile(r'^http:\/\/edu\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_bendi_news = re.compile(r'^http:\/\/bendi\.news\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_jiankang = re.compile(r'^http:\/\/jiankang\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_art = re.compile(r'^http:\/\/art\.163\.com\/18\/\d+\/\d+\/\w+.html')
+
+pattern_dy = re.compile(r'^http:\/\/dy\.163\.com\/18\/\d+\/\d+\/\w+.html')
 
 RANK_URL = ['http://news.163.com/special/0001386F/rank_news.html',
             'http://news.163.com/special/0001386F/rank_ent.html',
@@ -74,6 +109,8 @@ MONGODB_TABLE_13 = 'media'
 """
 client = pymongo.MongoClient(MONGODB_HOST, MONGODB_PORT)
 neteasenews = client[MONGODB_DBNAME]
+# 建表
+index = neteasenews[MONGODB_TABLE_0]
 rank = neteasenews[MONGODB_TABLE_1]
 domestic = neteasenews[MONGODB_TABLE_3]
 world = neteasenews[MONGODB_TABLE_4]
@@ -82,6 +119,8 @@ datablog = neteasenews[MONGODB_TABLE_6]
 war = neteasenews[MONGODB_TABLE_7]
 air = neteasenews[MONGODB_TABLE_8]
 uav = neteasenews[MONGODB_TABLE_9]
+# 创建索引.
+index.create_index('articleUrl')
 rank.create_index('articleUrl')
 world.create_index('articleUrl')
 domestic.create_index('articleUrl')
