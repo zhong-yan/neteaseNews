@@ -1,0 +1,1 @@
+from spider.config import *
