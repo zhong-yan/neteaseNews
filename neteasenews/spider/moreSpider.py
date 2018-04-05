@@ -1,13 +1,26 @@
-from bs4 import BeautifulSoup
-from neteasenews.spider.mainSpider import savedata, details
-from neteasenews.spider.config import MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs
-import requests
 import re
+from bs4 import BeautifulSoup
+import requests
+from neteasenews.spider.config import pattern, MONGODB_TABLE_0, \
+    MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs
+from neteasenews.spider.mainSpider import chrome_driver, details, savedata
 
 
-# http://dy.163.com/v2/article/detail/DDU6KM9B05118VJ5.html
+# http://news.163.com/
+def get_index_urls():
+    html_index = chrome_driver(URLs[0])
+    page_index = BeautifulSoup(html_index, 'lxml')
+    links = page_index.findAll('a')
+    index_list = []
+    for link in links:
+        if link.get('href'):
+            if re.search(pattern, link.get('href')):
+                re_links = re.search(pattern, link.get('href')).group(0)
+                index_list.append(re_links)
+    return index_list
+
+
 # http://news.163.com/college
-
 def get_college_urls():
     html_college = requests.get(URLs[10])
     pagecollege = BeautifulSoup(html_college.text, 'lxml')
@@ -22,6 +35,7 @@ def get_college_urls():
     return colleges_list
 
 
+# http://gov.163.com/
 def get_gov_url():
     html_gov = requests.get(URLs[11])
     page_gov = BeautifulSoup(html_gov.text, 'lxml')
@@ -36,6 +50,7 @@ def get_gov_url():
     return gov_list
 
 
+# http://gongyi.163.com/
 def get_gongyi_url():
     html_gongyi = requests.get(URLs[12])
     page_gongyi = BeautifulSoup(html_gongyi.text, 'lxml')
@@ -50,6 +65,7 @@ def get_gongyi_url():
     return gongyi_list
 
 
+# http://media.163.com/
 def get_media_url():
     html_media = requests.get(URLs[13])
     page_media = BeautifulSoup(html_media.text, 'lxml')
@@ -62,6 +78,14 @@ def get_media_url():
                 re_links = re.search(pattern_media, link.get('href')).group(0)
                 media_list.append(re_links)
     return media_list
+
+
+def indexspider():
+    all_urls = get_index_urls()
+    for item in all_urls:
+        data = details(item)
+        if data:
+            savedata(data, MONGODB_TABLE_0)
 
 
 def collegespider():
@@ -107,7 +131,6 @@ def mediaspider():
         savedata(media_content, MONGODB_TABLE_13)
 
 
-if __name__ == "__main__":
-    # collegespider()
-    # gongyispider()
-    mediaspider()
+if __name__ == '__main__':
+    indexspider()
+

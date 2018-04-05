@@ -1,5 +1,8 @@
-from neteasenews.spider.mainSpider import *
-from neteasenews.spider.config import *
+import re
+import requests
+from bs4 import BeautifulSoup
+from neteasenews.spider.mainSpider import details, savedata
+from neteasenews.spider.config import RANK_URL, MONGODB_TABLE_1
 from multiprocessing import Pool
 
 
@@ -8,47 +11,24 @@ from multiprocessing import Pool
 # http://news.163.com/rank/
 def rankspider(url):
     links_list = []
-    patterns = re.compile(r'^http:\/\/[\w]+\.163\.com\/18\/\d+\/\d+\/\w+.html')
+    patterns = re.compile(r'^http:\/\/[\w]+\.163\.com\/\d+\/\d+\/\d+\/\w+.html')
     html = requests.get(url)
     htmlpage = BeautifulSoup(html.text, 'lxml')
-    # 这是一个很好提取文章标题的方法,我咋忘记了,卧槽
-    title = htmlpage.select('title')[0].get_text().split('_')[0]
     links = htmlpage.findAll('a')
-    # 通过链接找到属性?
     for link in links:
         if link.get('href'):
-            if re.search(pattern, link.get('href')):
+            if re.search(patterns, link.get('href')):
                 re_links = re.search(patterns, link.get('href')).group(0)
                 links_list.append(re_links)
-    for link in links_list:
-        if details(link):
-            detail = details(link)
-            if detail:
-                #
-                if detail['content']:
-                    data = {
-                        'title': title,
-                        # url
-                        'articleUrl': link,
-                        # 来源
-                        'source': detail['source'],
-                        # 作者
-                        'author': detail['author'],
-                        # 发表时间
-                        'publishtime': detail['publishtime'],
-                        # 正文
-                        'content': detail['content']
-                    }
-                    savedata(data, MONGODB_TABLE_1)
-                #
-                return False
-            if detail is None:
-                print('获取详情网页失败', urls)
-                details(link)
+    for item in links_list:
+        data = details(item)
+        if data:
+            savedata(data, MONGODB_TABLE_1)
 
 
 if __name__ == '__main__':
-    pool = Pool(2)
-    pool.map(rankspider, RANK_URL)
-    pool.close()
+    # pool = Pool(2)
+    # pool.map(rankspider, RANK_URL)
+    # pool.close()
+    rankspider(RANK_URL[2])
     # rank 表里还缺些数据,比如tag, 点击数等等

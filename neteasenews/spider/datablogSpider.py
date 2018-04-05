@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from neteasenews.spider.config import *
+from selenium import webdriver
+from neteasenews.spider.config import options, MONGODB_TABLE_6
 from neteasenews.spider.mainSpider import savedata
 import re
 
@@ -45,7 +46,7 @@ def datablogspider():
                 'content': details_blog['content']
             }
             savedata(data, MONGODB_TABLE_6)
-        if datablog is None:
+        if details_blog is None:
             datablog_details(art_urls)
             print('请求链接可能不具备可以爬取条件')
             pass
