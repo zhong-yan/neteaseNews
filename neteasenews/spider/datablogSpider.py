@@ -1,9 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from config import *
-from mainSpider import savedata
-import time
+from neteasenews.spider.config import *
+from neteasenews.spider.mainSpider import savedata
 import re
 
 
@@ -37,6 +35,7 @@ def datablogspider():
         if details_blog:
             data = {
                 'articleUrl': link.get('href'),
+                # bug
                 'title': info.get('alt'),
                 'author': details_blog['author'],
                 'source': details_blog['source'],

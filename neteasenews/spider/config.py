@@ -1,12 +1,6 @@
 import pymongo
 import datetime
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
-
-
 BASE_URL = 'http://news.163.com/'
 
 URLs = ['http://news.163.com/',
@@ -85,6 +79,9 @@ domestic = neteasenews[MONGODB_TABLE_3]
 world = neteasenews[MONGODB_TABLE_4]
 shehui = neteasenews[MONGODB_TABLE_5]
 datablog = neteasenews[MONGODB_TABLE_6]
+war = neteasenews[MONGODB_TABLE_7]
+air = neteasenews[MONGODB_TABLE_8]
+uav = neteasenews[MONGODB_TABLE_9]
 rank.create_index('articleUrl')
 world.create_index('articleUrl')
 domestic.create_index('articleUrl')

@@ -1,8 +1,5 @@
-import requests
-from bs4 import BeautifulSoup
-import re
-from mainSpider import *
-from config import *
+from neteasenews.spider.mainSpider import *
+from neteasenews.spider.config import *
 from multiprocessing import Pool
 
 
@@ -51,7 +48,7 @@ def rankspider(url):
 
 
 if __name__ == '__main__':
-    pool = Pool(5)
+    pool = Pool(2)
     pool.map(rankspider, RANK_URL)
     pool.close()
     # rank 表里还缺些数据,比如tag, 点击数等等

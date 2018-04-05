@@ -1,17 +1,15 @@
 import re
 import requests
-import time
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import WebDriverException
-from config import *
-import datetime
 from multiprocessing import Pool
-from itertools import *
+# 开启startmap方法库
+# from itertools import *
+from neteasenews.spider.config import *
 
 
 def chrome_driver(_url):
