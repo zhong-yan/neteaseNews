@@ -28,7 +28,6 @@ def datablogspider():
     page = BeautifulSoup(html, 'lxml')
     infos = page.select('title')[0].get_text().split('_')[0]
     links = page.select('.post-list > li > a')
-    # for info, link in zip(infos, links):
     for link in links:
         art_urls = link.get('href')
         details_blog = datablog_details(art_urls)
@@ -43,7 +42,6 @@ def datablogspider():
                 'publishtime_wangyi': details_blog['publishtime_wangyi'],
                 'imgUrl_blog': details_blog['imgUrl_blog'],
                 'imgUrl_wangyi': details_blog['imgUrl_wangyi'],
-                # 'imgUrl': info.get('src'),
                 'content': details_blog['content']
             }
             savedata(data, MONGODB_TABLE_6)

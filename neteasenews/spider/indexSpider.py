@@ -1,13 +1,11 @@
 import re
-
-
 from bs4 import BeautifulSoup
 from neteasenews.spider.config import pattern, MONGODB_TABLE_0
 from neteasenews.spider.mainSpider import chrome_driver, details, savedata
 
 
 # http://news.163.com/
-def get_urls():
+def get_index_urls():
     html = chrome_driver('http://news.163.com/')
     pagecontent = BeautifulSoup(html, 'lxml')
     links = pagecontent.findAll('a')
@@ -21,7 +19,7 @@ def get_urls():
 
 
 def indexspider():
-    all_urls = get_urls()
+    all_urls = get_index_urls()
     for item in all_urls:
         data = details(item)
         if data:

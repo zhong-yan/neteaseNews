@@ -119,6 +119,10 @@ datablog = neteasenews[MONGODB_TABLE_6]
 war = neteasenews[MONGODB_TABLE_7]
 air = neteasenews[MONGODB_TABLE_8]
 uav = neteasenews[MONGODB_TABLE_9]
+college = neteasenews[MONGODB_TABLE_10]
+gov = neteasenews[MONGODB_TABLE_11]
+gongyi = neteasenews[MONGODB_TABLE_12]
+media = neteasenews[MONGODB_TABLE_13]
 # 创建索引.
 index.create_index('articleUrl')
 rank.create_index('articleUrl')
@@ -126,7 +130,10 @@ world.create_index('articleUrl')
 domestic.create_index('articleUrl')
 shehui.create_index('articleUrl')
 datablog.create_index('articleUrl')
-
+college.create_index('articleUrl')
+gov.create_index('articleUrl')
+gongyi.create_index('articleUrl')
+media.create_index('articleUrl')
 # config chromedriver:
 prefs = {
     'profile.default_content_setting_values': {
@@ -137,7 +144,7 @@ prefs = {
 }
 options = webdriver.ChromeOptions()
 options.add_experimental_option('prefs', prefs)
-# options.add_argument('--headless')
+options.add_argument('--headless')
 
 # 现在时间:
 systemtime = datetime.datetime.now().strftime("%Y.%m.%d-%H:%M:%S")

@@ -98,6 +98,7 @@ def details(url):
     source = response.select('#ne_article_source')
     author = response.select('.ep-editor')
     pics = response.select('#endText > p.f_center > img')
+    comments_wangyi = response.select('.post_cnum_tie.js-tielink.js-tiejoincount')
     # js控制的轮播图star
     is_imgs = response.select('.main')
     img_tags = response.select('.tag')
@@ -164,16 +165,15 @@ def details(url):
         }
         return data
     if publishtimes_blog and contents:
-        for content, publishtime in zip(contents, publishtimes_blog):
+        for content, publishtime, comment in zip(contents, publishtimes_blog, comments):
             data = {
                 'title': title_more,
                 'author': None,
                 'source': None,
-                'comments': comments.get_text(),
+                'comments': comment.get_text(),
                 'publishtime_wangyi': None,
                 'publishtime_blog': publishtime.get_text(),
                 'imgUrl_blog': [pic.get('src') for pic in pics_in_blog],
-                'imgUrl_wangyi': None,
                 'content': [item for item in content.stripped_strings]
             }
             return data
