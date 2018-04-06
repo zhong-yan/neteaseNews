@@ -27,8 +27,6 @@ def rankspider(url):
 
 
 if __name__ == '__main__':
-    # pool = Pool(2)
-    # pool.map(rankspider, RANK_URL)
-    # pool.close()
-    rankspider(RANK_URL[2])
-    # rank 表里还缺些数据,比如tag, 点击数等等
+    pool = Pool(2)
+    pool.map(rankspider, RANK_URL)
+    pool.close()

@@ -132,5 +132,5 @@ def mediaspider():
 
 
 if __name__ == '__main__':
-    indexspider()
+    mediaspider()
 

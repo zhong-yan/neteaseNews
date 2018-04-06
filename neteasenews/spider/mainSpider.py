@@ -2,6 +2,7 @@ import re
 import requests
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from bs4 import BeautifulSoup
@@ -9,7 +10,8 @@ from selenium.common.exceptions import WebDriverException
 from multiprocessing import Pool
 # 开启startmap方法库
 # from itertools import *
-from neteasenews.spider.config import *
+from neteasenews.spider.config import options, systemtime, neteasenews, URLs, MONGODB_TABLE_3, MONGODB_TABLE_7, \
+    MONGODB_TABLE_4, MONGODB_TABLE_8, MONGODB_TABLE_5, MONGODB_TABLE_9
 
 
 def chrome_driver(_url):
@@ -57,30 +59,18 @@ def mainspider(links_world, table):
         detail = details(urls)
         if detail:
             datalist = {
-                # 文章url
-                'articleUrl': title.get('href'),
-                # 标题
                 'title': title.get_text(),
-                # 来源
+                'url': title.get('href'),
                 'source': detail['source'],
-                # 作者
                 'author': detail['author'],
-                # 跟帖数
-                'comemnts': comment.get_text(),
-                # 发表时间
-                'publishtime': detail['publishtime'],
-                # 最新时间
-                'latest_time': systemtime + '--' + newstime.get_text(),
-                # 标签
+                'comments': comment.get_text(),
+                'publishTime': detail['publishtime'],
+                'lastTime': systemtime + '--' + newstime.get_text(),
                 'tag': [n_tag for n_tag in tag.stripped_strings],
-                # 若是轮播图,会显示图片tag
-                'imgTag': detail['imgTag'],
-                # 若是图文,显示一组图片链接
-                'imgUrl': detail['imgUrl'],
-                # 轮播图的介绍
-                'picOverview': detail['picOverview'],
-                # 正文
-                'content': detail['content'],
+                'tag_pictures': detail['imgTag'],
+                'pictures': detail['imgUrl'],
+                'desc_pictures': detail['picOverview'],
+                'contents': detail['content'],
             }
             # updatedata(datalist, table)
             savedata(datalist, table)
@@ -98,7 +88,6 @@ def details(url):
     source = response.select('#ne_article_source')
     author = response.select('.ep-editor')
     pics = response.select('#endText > p.f_center > img')
-    comments_wangyi = response.select('.post_cnum_tie.js-tielink.js-tiejoincount')
     # js控制的轮播图star
     is_imgs = response.select('.main')
     img_tags = response.select('.tag')
@@ -118,14 +107,14 @@ def details(url):
             data = {
                 # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
                 'title': title_more,
-                'articleUrl': url,
+                'url': url,
                 'author': None,
-                'publishtime': None,
+                'publishTime': None,
                 'source': None,
-                'imgTag': [pic for pic in img_tag.stripped_strings][:0],
-                'imgUrl': None,
-                'picOverview': img_overview.get_text(),
-                'content': None
+                'tag_pics': [pic for pic in img_tag.stripped_strings][:0],
+                'pictures': None,
+                'desc_pictures': img_overview.get_text(),
+                'contents': None
             }
             return data
     # 正文含有图片
@@ -137,14 +126,14 @@ def details(url):
             data = {
                 # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
                 'title': title_more,
-                'articleUrl': url,
+                'url': url,
                 'author': au.get_text().split('：')[1],
-                'publishtime': format_time,
+                'publishTime': format_time,
                 'source': sou.get_text(),
-                'imgTag': None,
-                'imgUrl': [pic.get('src') for pic in pics],
-                'picOverview': None,
-                'content': [page for page in art.stripped_strings][:-2]
+                'tag_pictures': None,
+                'pictures': [pic.get('src') for pic in pics],
+                'desc_pictures': None,
+                'contents': [page for page in art.stripped_strings][:-2]
             }
             return data
     # 正文没有图片
@@ -154,27 +143,28 @@ def details(url):
         data = {
             # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
             'title': title_more,
-            'articleUrl': url,
+            'url': url,
             'author': au.get_text().split('：')[1],
-            'publishtime': format_time,
+            'publishTime': format_time,
             'source': sou.get_text(),
-            'imgTag': None,
-            'imgUrl': None,
-            'picOverview': None,
-            'content': [page for page in art.stripped_strings][:-2]
+            'tag_pictures': None,
+            'pictures': None,
+            'desc_pictures': None,
+            'contents': [page for page in art.stripped_strings][:-2]
         }
         return data
     if publishtimes_blog and contents:
         for content, publishtime, comment in zip(contents, publishtimes_blog, comments):
             data = {
                 'title': title_more,
+                'url': url,
                 'author': None,
                 'source': None,
                 'comments': comment.get_text(),
-                'publishtime_wangyi': None,
-                'publishtime_blog': publishtime.get_text(),
-                'imgUrl_blog': [pic.get('src') for pic in pics_in_blog],
-                'content': [item for item in content.stripped_strings]
+                'publishTime_blog': None,
+                'publishTime_news': publishtime.get_text(),
+                'pictures': [pic.get('src') for pic in pics_in_blog],
+                'contents': [item for item in content.stripped_strings]
             }
             return data
 
@@ -203,11 +193,11 @@ def savedata(data, tablename):
 
 
 if __name__ == '__main__':
-    # 国内,社会,国际Tab:
+    # 国内, 社会, 国际:
+    # 军事, 无人机, 航空
     while True:
         list_table = [(URLs[3], MONGODB_TABLE_3), (URLs[4], MONGODB_TABLE_4), (URLs[5], MONGODB_TABLE_5),
                       (URLs[7], MONGODB_TABLE_7), (URLs[8], MONGODB_TABLE_8), (URLs[9], MONGODB_TABLE_9)]
-        # important points: startmap()
         pool = Pool(6)
         # 为什么会有7个chrome,原因是因为运行了config文件,解决方案,在mainspider里面写浏览器对象
         pool.starmap(mainspider, [item for item in list_table])

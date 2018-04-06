@@ -34,16 +34,15 @@ def datablogspider():
         details_blog = datablog_details(art_urls)
         if details_blog:
             data = {
-                'articleUrl': link.get('href'),
-                # bug
                 'title': infos,
+                'url': link.get('href'),
                 'author': details_blog['author'],
                 'source': details_blog['source'],
-                'publishtime_blog': details_blog['publishtime_blog'],
-                'publishtime_wangyi': details_blog['publishtime_wangyi'],
-                'imgUrl_blog': details_blog['imgUrl_blog'],
-                'imgUrl_wangyi': details_blog['imgUrl_wangyi'],
-                'content': details_blog['content']
+                'publishTime_blog': details_blog['publishtime_blog'],
+                'publishTime_news': details_blog['publishtime_wangyi'],
+                'pictures_blog': details_blog['imgUrl_blog'],
+                'pictures_news': details_blog['imgUrl_wangyi'],
+                'contents': details_blog['content']
             }
             savedata(data, MONGODB_TABLE_6)
         if details_blog is None:
@@ -72,11 +71,11 @@ def datablog_details(url):
             data = {
                 'author': None,
                 'source': None,
-                'publishtime_wangyi': None,
-                'publishtime_blog': publishtime.get_text(),
-                'imgUrl_blog': [pic.get('src') for pic in pics_in_blog],
-                'imgUrl_wangyi': None,
-                'content': [item for item in content.stripped_strings]
+                'publishTime_blog': None,
+                'publishTime_news': publishtime.get_text(),
+                'pictures_blog': [pic.get('src') for pic in pics_in_blog],
+                'pictures_news': None,
+                'contents': [item for item in content.stripped_strings]
             }
             return data
     for art, so, au, ptime in zip(article, source, author, publishtime):
@@ -86,25 +85,14 @@ def datablog_details(url):
             # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
             'author': au.get_text().split('：')[1],
             'source': so.get_text(),
-            'publishtime_blog': None,
-            'publishtime_wangyi': format_time,
-            'imgUrl_blog': None,
-            'imgUrl_wangyi': [pic.get('src') for pic in pics_in_wangyi],
-            'content': [page for page in art.stripped_strings][:-2]
+            'publishTime_blog': None,
+            'publishTime_news': format_time,
+            'pictures_blog': None,
+            'pictures_news': [pic.get('src') for pic in pics_in_wangyi],
+            'contents': [page for page in art.stripped_strings][:-2]
         }
         return data
 
 
 if __name__ == '__main__':
     datablogspider()
-'''
-仔细观察page_source,发现文档就才在js代码里,可以通过正则找出来
-放弃正则,json.loads根本就格式不了,采用传统选择器手法,传统根本做不了
-pattern = re.compile('var ohnofuchlist=\[\n(.*?)"a"\];', re.S)
-result = re.search(pattern, response.text)
-if result:
-解决非法字符串无法loads为json格式,非法,'a'和一对[],我日呀
-r_json = result.group(1).replace('[', '{').replace(']', '}')
-r_json = result.group(1)
-print(r_json)
-'''
