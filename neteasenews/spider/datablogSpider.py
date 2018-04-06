@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from neteasenews.spider.config import options, MONGODB_TABLE_6
-from neteasenews.spider.mainSpider import savedata
+from neteasenews.spider.mainSpider import updatedata
 import re
 
 
@@ -38,13 +38,13 @@ def datablogspider():
                 'url': link.get('href'),
                 'author': details_blog['author'],
                 'source': details_blog['source'],
-                'publishTime_blog': details_blog['publishtime_blog'],
-                'publishTime_news': details_blog['publishtime_wangyi'],
-                'pictures_blog': details_blog['imgUrl_blog'],
-                'pictures_news': details_blog['imgUrl_wangyi'],
-                'contents': details_blog['content']
+                'publishTime_blog': details_blog['publishTime_blog'],
+                'publishTime_news': details_blog['publishTime_news'],
+                'pictures_blog': details_blog['pictures_blog'],
+                'pictures_news': details_blog['pictures_news'],
+                'contents': details_blog['contents']
             }
-            savedata(data, MONGODB_TABLE_6)
+            updatedata(data, MONGODB_TABLE_6)
         if details_blog is None:
             datablog_details(art_urls)
             print('请求链接可能不具备可以爬取条件')

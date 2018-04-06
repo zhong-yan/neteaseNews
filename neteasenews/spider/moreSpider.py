@@ -2,8 +2,8 @@ import re
 from bs4 import BeautifulSoup
 import requests
 from neteasenews.spider.config import pattern, MONGODB_TABLE_0, \
-    MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs
-from neteasenews.spider.mainSpider import chrome_driver, details, savedata
+    MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs, MONGODB_TABLE_1, RANK_URL
+from neteasenews.spider.mainSpider import chrome_driver, details, updatedata
 
 
 # http://news.163.com/
@@ -85,7 +85,7 @@ def indexspider():
     for item in all_urls:
         data = details(item)
         if data:
-            savedata(data, MONGODB_TABLE_0)
+            updatedata(data, MONGODB_TABLE_0)
 
 
 def collegespider():
@@ -107,30 +107,51 @@ def collegespider():
                     'font': font_content.get_text().replace('\n', ''),
                     'content': [page for page in content.stripped_strings]
                 }
-                savedata(data_college, MONGODB_TABLE_10)
+                updatedata(data_college, MONGODB_TABLE_10)
 
 
 def govspider():
     gov_data = get_gov_url()
     for link in gov_data:
         gov_content = details(link)
-        savedata(gov_content, MONGODB_TABLE_11)
+        updatedata(gov_content, MONGODB_TABLE_11)
 
 
 def gongyispider():
     gongyi_data = get_gongyi_url()
     for url in gongyi_data:
         gongyi_content = details(url)
-        savedata(gongyi_content, MONGODB_TABLE_12)
+        updatedata(gongyi_content, MONGODB_TABLE_12)
 
 
 def mediaspider():
     media_data = get_media_url()
     for cat in media_data:
         media_content = details(cat)
-        savedata(media_content, MONGODB_TABLE_13)
+        updatedata(media_content, MONGODB_TABLE_13)
+
+
+# Rank_url里面包含许多links,可以用map()方法建立进程,否则可以遍历赋予url
+# http://news.163.com/rank/
+def rankspider():
+    links_list = []
+    patterns = re.compile(r'^http:\/\/[\w]+\.163\.com\/\d+\/\d+\/\d+\/\w+.html')
+    for url in RANK_URL:
+        html = requests.get(url)
+        htmlpage = BeautifulSoup(html.text, 'lxml')
+        links = htmlpage.findAll('a')
+        for link in links:
+            if link.get('href'):
+                if re.search(patterns, link.get('href')):
+                    re_links = re.search(patterns, link.get('href')).group(0)
+                    links_list.append(re_links)
+        for item in links_list:
+            data = details(item)
+            if data:
+                updatedata(data, MONGODB_TABLE_1)
 
 
 if __name__ == '__main__':
     mediaspider()
+    rankspider()
 

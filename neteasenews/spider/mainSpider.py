@@ -64,16 +64,15 @@ def mainspider(links_world, table):
                 'source': detail['source'],
                 'author': detail['author'],
                 'comments': comment.get_text(),
-                'publishTime': detail['publishtime'],
+                'publishTime': detail['publishTime'],
                 'lastTime': systemtime + '--' + newstime.get_text(),
                 'tag': [n_tag for n_tag in tag.stripped_strings],
-                'tag_pictures': detail['imgTag'],
-                'pictures': detail['imgUrl'],
-                'desc_pictures': detail['picOverview'],
-                'contents': detail['content'],
+                'tag_pics': detail['tag_pics'],
+                'pictures': detail['pictures'],
+                'desc_pictures': detail['desc_pictures'],
+                'contents': detail['contents'],
             }
-            # updatedata(datalist, table)
-            savedata(datalist, table)
+            updatedata(datalist, table)
         if detail is None:
             print('获取详情网页失败', urls)
             details(urls)
@@ -83,7 +82,11 @@ def details(url):
     page = requests.get(url)
     response = BeautifulSoup(page.text, 'lxml')
     # 处理bug1,如果文章内有视频,正文就显示为None,尽管在其他标签里面,但是每次都试图去改,收益不大.(留作记录)
-    title_more = response.select('title')[0].get_text().split('_')[0]
+    try:
+        title_more = response.select('title')[0].get_text().split('_')[0]
+    except IndexError:
+        print('该文章源代码head标签里没有title标签,暂时没找到很好的方法.')
+        pass
     article = response.select('.post_text')
     source = response.select('#ne_article_source')
     author = response.select('.ep-editor')
@@ -130,7 +133,7 @@ def details(url):
                 'author': au.get_text().split('：')[1],
                 'publishTime': format_time,
                 'source': sou.get_text(),
-                'tag_pictures': None,
+                'tag_pics': None,
                 'pictures': [pic.get('src') for pic in pics],
                 'desc_pictures': None,
                 'contents': [page for page in art.stripped_strings][:-2]
@@ -147,7 +150,7 @@ def details(url):
             'author': au.get_text().split('：')[1],
             'publishTime': format_time,
             'source': sou.get_text(),
-            'tag_pictures': None,
+            'tag_pics': None,
             'pictures': None,
             'desc_pictures': None,
             'contents': [page for page in art.stripped_strings][:-2]
@@ -179,7 +182,7 @@ def details(url):
 
 
 def updatedata(data, tablename):
-    if neteasenews[tablename].update({'articleUrl': data['articleUrl']}, {'$set': data}, True):
+    if neteasenews[tablename].update({'url': data['url']}, {'$set': data}, True):
         print('--------------------------------------------------------------------------------------\n')
         print('更新存储到mongodb数据库成功,目前文档数:{0}\t\n\n数据展示:{1}'.format(neteasenews[tablename].find().count(), data))
         return True
@@ -202,4 +205,5 @@ if __name__ == '__main__':
         # 为什么会有7个chrome,原因是因为运行了config文件,解决方案,在mainspider里面写浏览器对象
         pool.starmap(mainspider, [item for item in list_table])
         pool.close()
+
         print('数据爬取成功,并且成功存储到数据库中')
