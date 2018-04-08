@@ -118,7 +118,7 @@ prefs = {
 }
 options = webdriver.ChromeOptions()
 options.add_experimental_option('prefs', prefs)
-options.add_argument('--headless')
+# options.add_argument('--headless')
 
 # 现在时间:
 systemtime = datetime.datetime.now().strftime("%Y.%m.%d-%H:%M:%S")

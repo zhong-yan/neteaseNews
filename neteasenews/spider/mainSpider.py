@@ -1,5 +1,6 @@
 import re
 import requests
+import json
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium import webdriver
@@ -97,7 +98,7 @@ def details(url):
     img_overviews = response.select('.overview > p')
     # js控制的轮播图end
     publishtime = response.select('.post_time_source')
-    # 开始处理图片,现在只要url,因为是js控制,现在无法找齐全url,暂时不做处理....
+    # 开始处理图片,现在只要url,因为是js控制,现在无法找齐全url,暂时不做处理....(已解决,见json_details()方法)
     # 博客架构:
     pics_in_blog = response.select('#endText > p > a.gallery.f_center > img')
     contents = response.select('.main-content')
@@ -158,7 +159,7 @@ def details(url):
         return data
     if publishtimes_blog and contents:
         for content, publishtime, comment in zip(contents, publishtimes_blog, comments):
-            data = {
+            data_blog = {
                 'title': title_more,
                 'url': url,
                 'author': None,
@@ -169,7 +170,7 @@ def details(url):
                 'pictures': [pic.get('src') for pic in pics_in_blog],
                 'contents': [item for item in content.stripped_strings]
             }
-            return data
+            return data_blog
 
 
 '''

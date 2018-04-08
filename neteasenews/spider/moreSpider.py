@@ -151,6 +151,5 @@ def rankspider():
                 updatedata(data, MONGODB_TABLE_1)
 
 
-if __name__ == '__main__':
-    mediaspider()
-    rankspider()
+# if __name__ == '__main__':
+#     get_photo_urls()
