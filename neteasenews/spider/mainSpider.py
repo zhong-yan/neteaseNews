@@ -8,11 +8,27 @@ from selenium.webdriver.support.wait import WebDriverWait
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import WebDriverException
 from neteasenews.spider.photoSpider import json_details
-from multiprocessing import Pool
-# 开启startmap方法库
-# from itertools import *
-from neteasenews.spider.config import options, systemtime, neteasenews, URLs, MONGODB_TABLE_3, MONGODB_TABLE_7, \
-    MONGODB_TABLE_4, MONGODB_TABLE_8, MONGODB_TABLE_5, MONGODB_TABLE_9
+from neteasenews.spider.config import options, neteasenews, MONGODB_TABLE_9, MONGODB_TABLE_3, MONGODB_TABLE_4, \
+    MONGODB_TABLE_5, MONGODB_TABLE_7, MONGODB_TABLE_8, URLs
+import datetime
+from multiprocessing.pool import Pool
+from itertools import *
+
+
+# database config
+domestic = neteasenews[MONGODB_TABLE_3]
+world = neteasenews[MONGODB_TABLE_4]
+sociology = neteasenews[MONGODB_TABLE_5]
+military = neteasenews[MONGODB_TABLE_7]
+aviation = neteasenews[MONGODB_TABLE_8]
+uav = neteasenews[MONGODB_TABLE_9]
+# 创建索引.
+domestic.create_index('url')
+world.create_index('url')
+sociology.create_index('url')
+military.create_index('url')
+aviation.create_index('url')
+uav.create_index('url')
 
 
 def chrome_driver(_url):
@@ -55,6 +71,8 @@ def mainspider(links_world, table):
     tags = page.select('.keywords')
     newstimes = page.select('.time')
     comments = page.select('.post_recommend_tie_icon.icons')
+    # 系统时间
+    systemtime = datetime.datetime.now().strftime("%Y.%m.%d-%H:%M:%S")
     for title, tag, newstime, comment in zip(titles, tags, newstimes, comments):
         urls = title.get('href')
         detail = details(urls)
@@ -95,7 +113,7 @@ def details(url):
         img_overviews = response.select('.overview > p')
         # js控制的轮播图 end--->photoview
         publishtime = response.select('.post_time_source')
-        # 开始处理图片,现在只要url,因为是js控制,现在无法找齐全url,暂时不做处理....(已解决,见json_details()方法)
+        # 开始处理图片,现在只要url,因为是js控制,现在无法找齐全url,暂时不做处理....(已解决,见photoSpider.json_details()方法)
         # 博客架构:
         pics_in_blog = response.select('#endText > p > a.gallery.f_center > img')
         contents = response.select('.main-content')
@@ -162,8 +180,8 @@ def details(url):
                     'dutyeditor': None,
                     'source': None,
                     'comments': comment.get_text(),
-                    'publishTime_blog': None,
-                    'publishTime_news': publishtime.get_text(),
+                    'publishTime_blog': publishtime.get_text(),
+                    'publishTime_news': None,
                     'pictures': [pic.get('src') for pic in pics_in_blog],
                     'contents': [item for item in content.stripped_strings]
                 }
@@ -178,14 +196,16 @@ def details(url):
 原因: 生成了空字典
 解决方法: 判断非空字典
 2. 如何处理详情页的视频问题?
-解决方法: 我他妈怎么知道 我操你妈逼的
+解决方法: 我他妈怎么知道 我操
 '''
 
 
 def updatedata(data, tablename):
     if neteasenews[tablename].update({'url': data['url']}, {'$set': data}, True):
-        print('--------------------------------------------------------------------------------------\n')
-        print('更新存储到mongodb数据库成功,目前文档数:{0}\t\n\n数据展示:{1}'.format(neteasenews[tablename].find().count(), data))
+        print('=======================================================================================\n')
+        print('更新存储到mongodb数据库成功,目前{0}的文档数:{1}\t\n'.format(tablename, neteasenews[tablename].find().count()))
+        print('=======================================================================================\n')
+        print('数据展示:\n', data)
         return True
 
 
@@ -196,16 +216,10 @@ def savedata(data, tablename):
         return True
 
 
-if __name__ == '__main__':
-    details('http://news.163.com/air/photoview/56NT0001/2292490.html#p=DES954MC56NT0001NOS')
-    # 国内, 社会, 国际:
-    # 军事, 无人机, 航空
-    while True:
-        list_table = [(URLs[3], MONGODB_TABLE_3), (URLs[4], MONGODB_TABLE_4), (URLs[5], MONGODB_TABLE_5),
-                      (URLs[7], MONGODB_TABLE_7), (URLs[8], MONGODB_TABLE_8), (URLs[9], MONGODB_TABLE_9)]
-        pool = Pool(6)
-        # 为什么会有7个chrome,原因是因为运行了config文件,解决方案,在mainspider里面写浏览器对象
-        pool.starmap(mainspider, [item for item in list_table])
-        pool.close()
-
-        print('数据爬取成功,并且成功存储到数据库中')
+# 开启进程爬取
+def managerspider():
+    # 进程所需的迭代参数.
+    _ARGS = [(URLs[3], MONGODB_TABLE_3), (URLs[4], MONGODB_TABLE_4), (URLs[5], MONGODB_TABLE_5),
+             (URLs[7], MONGODB_TABLE_7), (URLs[8], MONGODB_TABLE_8), (URLs[9], MONGODB_TABLE_9)]
+    pool = Pool(6)
+    pool.starmap(mainspider, _ARGS)

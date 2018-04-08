@@ -1,9 +1,25 @@
 import re
 from bs4 import BeautifulSoup
 import requests
-from neteasenews.spider.config import pattern, MONGODB_TABLE_0, \
-    MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs, MONGODB_TABLE_1, RANK_URL
+from neteasenews.spider.config import MONGODB_TABLE_0, \
+    MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs, MONGODB_TABLE_1, RANK_URL, neteasenews
 from neteasenews.spider.mainSpider import chrome_driver, details, updatedata
+
+
+# database config
+index = neteasenews[MONGODB_TABLE_0]
+rank = neteasenews[MONGODB_TABLE_1]
+college = neteasenews[MONGODB_TABLE_10]
+government = neteasenews[MONGODB_TABLE_11]
+gongyi = neteasenews[MONGODB_TABLE_12]
+media = neteasenews[MONGODB_TABLE_13]
+
+index.create_index('url')
+rank.create_index('url')
+college.create_index('url')
+government.create_index('url')
+gongyi.create_index('url')
+media.create_index('url')
 
 
 # http://news.163.com/
@@ -11,6 +27,7 @@ def get_index_urls():
     html_index = chrome_driver(URLs[0])
     page_index = BeautifulSoup(html_index, 'lxml')
     links = page_index.findAll('a')
+    pattern = re.compile(r'^http://[\w]+\.163\.com/18/\d+/\d+/\w+.html')
     index_list = []
     for link in links:
         if link.get('href'):
@@ -149,7 +166,3 @@ def rankspider():
             data = details(item)
             if data:
                 updatedata(data, MONGODB_TABLE_1)
-
-
-# if __name__ == '__main__':
-#     get_photo_urls()
