@@ -14,6 +14,7 @@ pictures.create_index('url')
 
 
 # http://news.163.com/photo/#Current
+# 是否需要不断点击右侧刷新图片.有待考虑
 def photospider():
     browser = webdriver.Chrome(chrome_options=options)
     browser.get(URLs[2])

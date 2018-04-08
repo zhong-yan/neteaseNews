@@ -125,3 +125,15 @@ Time:   2018.04.04
 按照json_details()的思路修改了mainspider里面的details方法,更实用于对付photoview网页
 
 **Time:   2018.04.09      00:44:32**
+
+---
+修复了datablog一些bug,对updatedata()方法进入了些许说明
+
+**Time:   2018.04.09      02:14:32**
+
+---
+爬虫部署完毕,运行正常,项目接近尾声,开始毕业论文
+
+隐隐感觉,details()方法还存在BUG,Oh my god, where is my chichen?
+
+**Time:   2018.04.09      04:15:32**

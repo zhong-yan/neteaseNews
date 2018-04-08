@@ -12,7 +12,6 @@ from neteasenews.spider.config import options, neteasenews, MONGODB_TABLE_9, MON
     MONGODB_TABLE_5, MONGODB_TABLE_7, MONGODB_TABLE_8, URLs
 import datetime
 from multiprocessing.pool import Pool
-from itertools import *
 
 
 # database config
@@ -119,7 +118,6 @@ def details(url):
         contents = response.select('.main-content')
         publishtimes_blog = response.select('#ptime')
         comments = response.select('#endpageUrl1 > a > span.js-tiejoincount')
-        #
         # 如果存在这个photoview代表是图集,分析网址而来的
         if 'photoview' in url.split('/'):
             data_list = json_details(url)
@@ -130,7 +128,7 @@ def details(url):
                     'url': url,
                     'desc_pictures': img_overview.get_text(),
                     'dutyeditor': data_list['dutyeditor'],
-                    'datetime': data_list['datetime'],
+                    'publishTime': data_list['datetime'],
                     'source': data_list['source'],
                     'tag_pics': [pic for pic in img_tag.stripped_strings][:0],
                     'pictures': data_list['pictures']
@@ -179,9 +177,9 @@ def details(url):
                     'url': url,
                     'dutyeditor': None,
                     'source': None,
+                    'tag_pics': None,
                     'comments': comment.get_text(),
-                    'publishTime_blog': publishtime.get_text(),
-                    'publishTime_news': None,
+                    'publishTime': publishtime.get_text(),
                     'pictures': [pic.get('src') for pic in pics_in_blog],
                     'contents': [item for item in content.stripped_strings]
                 }
@@ -203,9 +201,9 @@ def details(url):
 def updatedata(data, tablename):
     if neteasenews[tablename].update({'url': data['url']}, {'$set': data}, True):
         print('=======================================================================================\n')
-        print('更新存储到mongodb数据库成功,目前{0}的文档数:{1}\t\n'.format(tablename, neteasenews[tablename].find().count()))
+        print('更新存储到数据库成功,目前{0}的文档数:{1}\t\n'.format(tablename, neteasenews[tablename].find().count()))
         print('=======================================================================================\n')
-        print('数据展示:\n', data)
+        print('数据展示:\n\n', data)
         return True
 
 
