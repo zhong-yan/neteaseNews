@@ -2,13 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5403dedf-62c9-409e-8096-c7c800d06fee" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/neteasenews/spider/download.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neteasenews/logs/mainSpider.log" beforeDir="false" afterPath="$PROJECT_DIR$/neteasenews/logs/mainSpider.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neteasenews/spider/datablogSpider.py" beforeDir="false" afterPath="$PROJECT_DIR$/neteasenews/spider/datablogSpider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neteasenews/spider/mainSpider.py" beforeDir="false" afterPath="$PROJECT_DIR$/neteasenews/spider/mainSpider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/neteasenews/news.py" beforeDir="false" afterPath="$PROJECT_DIR$/neteasenews/news.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/neteasenews/spider/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/neteasenews/spider/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/neteasenews/spider/download.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/neteasenews/spider/moreSpider.py" beforeDir="false" afterPath="$PROJECT_DIR$/neteasenews/spider/moreSpider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neteasenews/spider/rankSpider.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -28,14 +28,38 @@
     <SUITE FILE_PATH="coverage/neteasenews$spydata.coverage" NAME="spydata Coverage Results" MODIFIED="1522954441187" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/neteasenews" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="config.py" pinned="false" current-in-tab="false">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="news.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/neteasenews/news.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="7" column="26" lean-forward="true" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/neteasenews/spider/config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1331">
-              <caret line="23" column="39" selection-start-line="23" selection-start-column="39" selection-end-line="23" selection-end-column="39" />
+            <state relative-caret-position="198">
+              <caret line="23" column="57" selection-start-line="23" selection-start-column="57" selection-end-line="23" selection-end-column="57" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="datablogSpider.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/neteasenews/spider/datablogSpider.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="720">
+              <caret line="46" column="23" selection-start-line="46" selection-start-column="23" selection-end-line="46" selection-end-column="23" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -44,8 +68,8 @@
       <file leaf-file-name="mainSpider.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/neteasenews/spider/mainSpider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="253">
-              <caret line="195" selection-start-line="195" selection-end-line="195" />
+            <state relative-caret-position="-1277">
+              <caret line="110" column="64" lean-forward="true" selection-start-line="110" selection-start-column="64" selection-end-line="110" selection-end-column="64" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -53,11 +77,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="moreSpider.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="moreSpider.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/neteasenews/spider/moreSpider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-558">
-              <caret line="5" column="66" selection-start-line="5" selection-start-column="66" selection-end-line="5" selection-end-column="66" />
+            <state relative-caret-position="505">
+              <caret line="155" column="16" selection-start-line="155" selection-start-column="16" selection-end-line="155" selection-end-column="16" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -96,16 +123,16 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/neteasenews/news.py" />
         <option value="$PROJECT_DIR$/neteasenews/spydata.py" />
         <option value="$PROJECT_DIR$/neteasenews/spider/collegeSpider.py" />
         <option value="$PROJECT_DIR$/neteasenews/spider/indexSpider.py" />
-        <option value="$PROJECT_DIR$/neteasenews/spider/config.py" />
         <option value="$PROJECT_DIR$/neteasenews/spider/download.py" />
         <option value="$PROJECT_DIR$/neteasenews/spider/rankSpider.py" />
         <option value="$PROJECT_DIR$/neteasenews/spider/mainSpider.py" />
         <option value="$PROJECT_DIR$/neteasenews/spider/datablogSpider.py" />
+        <option value="$PROJECT_DIR$/neteasenews/news.py" />
         <option value="$PROJECT_DIR$/neteasenews/spider/moreSpider.py" />
+        <option value="$PROJECT_DIR$/neteasenews/spider/config.py" />
       </list>
     </option>
   </component>
@@ -128,31 +155,7 @@
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="neteasenews" type="b2602c69:ProjectViewProjectNode" />
-              <item name="neteasenews" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="neteasenews" type="b2602c69:ProjectViewProjectNode" />
-              <item name="neteasenews" type="462c0819:PsiDirectoryNode" />
-              <item name="neteasenews" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="neteasenews" type="b2602c69:ProjectViewProjectNode" />
-              <item name="neteasenews" type="462c0819:PsiDirectoryNode" />
-              <item name="neteasenews" type="462c0819:PsiDirectoryNode" />
-              <item name="spider" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -353,7 +356,14 @@
       <option name="project" value="LOCAL" />
       <updated>1522975346870</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="savedata()改正为updatedata方法,一定程度上去重,并且异常了没有titlt标签导致列表边界溢出问题">
+      <created>1522978654761</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1522978654761</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -363,9 +373,9 @@
       <window_info anchor="bottom" id="TODO" order="11" />
       <window_info anchor="bottom" id="Event Log" order="0" side_tool="true" weight="0.3286385" />
       <window_info anchor="bottom" id="Database Changes" order="1" show_stripe_button="false" />
-      <window_info anchor="right" id="Run" order="5" weight="0.897511" />
       <window_info anchor="bottom" id="Version Control" order="2" />
       <window_info anchor="bottom" id="Python Console" order="3" />
+      <window_info anchor="right" id="Run" order="5" weight="0.897511" />
       <window_info anchor="right" id="Mongo Explorer" order="6" weight="0.18814056" />
       <window_info anchor="bottom" id="Terminal" order="4" />
       <window_info content_ui="combo" id="Project" order="1" weight="0.193265" />
@@ -373,15 +383,15 @@
       <window_info anchor="right" id="Database" order="0" />
       <window_info anchor="right" id="SciView" order="1" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Debug" order="8" weight="0.4" />
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="7" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="2" type="SLIDING" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="8" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="10" weight="0.4" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="2" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="3" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="6" />
       <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="7" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -396,7 +406,8 @@
     <MESSAGE value="实现所有架构的布设,完成度已达到99%" />
     <MESSAGE value="爬虫全都运行正常,下一步开始部署爬虫工作时间,条件" />
     <MESSAGE value="0406:08:45:20 修改表中键的正确意思,以及改正一些表名字,令人能懂." />
-    <option name="LAST_COMMIT_MESSAGE" value="0406:08:45:20 修改表中键的正确意思,以及改正一些表名字,令人能懂." />
+    <MESSAGE value="savedata()改正为updatedata方法,一定程度上去重,并且异常了没有titlt标签导致列表边界溢出问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="savedata()改正为updatedata方法,一定程度上去重,并且异常了没有titlt标签导致列表边界溢出问题" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -404,20 +415,30 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/neteasenews/spider/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neteasenews/spydata.py">
+    <entry file="file://$PROJECT_DIR$/neteasenews/spider/config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+        <state relative-caret-position="2232">
+          <caret line="124" lean-forward="true" selection-start-line="124" selection-end-line="124" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/neteasenews/news.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+        <state relative-caret-position="108">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/neteasenews/spydata.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
         </state>
       </provider>
     </entry>
@@ -438,32 +459,43 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/neteasenews/spider/config.py">
+    <entry file="file://$PROJECT_DIR$/neteasenews/spider/rankSpider.py" />
+    <entry file="file://$PROJECT_DIR$/neteasenews/spider/download.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/neteasenews/news.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1331">
-          <caret line="23" column="39" selection-start-line="23" selection-start-column="39" selection-end-line="23" selection-end-column="39" />
+        <state relative-caret-position="126">
+          <caret line="7" column="26" lean-forward="true" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/neteasenews/spider/rankSpider.py">
+    <entry file="file://$PROJECT_DIR$/neteasenews/spider/moreSpider.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="505">
+          <caret line="155" column="16" selection-start-line="155" selection-start-column="16" selection-end-line="155" selection-end-column="16" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/neteasenews/spider/download.py">
-      <provider selected="true" editor-type-id="text-editor" />
+    <entry file="file://$PROJECT_DIR$/neteasenews/spider/mainSpider.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1277">
+          <caret line="110" column="64" lean-forward="true" selection-start-line="110" selection-start-column="64" selection-end-line="110" selection-end-column="64" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/neteasenews/spider/datablogSpider.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
+        <state relative-caret-position="720">
           <caret line="46" column="23" selection-start-line="46" selection-start-column="23" selection-end-line="46" selection-end-column="23" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
@@ -471,20 +503,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/neteasenews/spider/mainSpider.py">
+    <entry file="file://$PROJECT_DIR$/neteasenews/spider/config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="195" selection-start-line="195" selection-end-line="195" />
+        <state relative-caret-position="198">
+          <caret line="23" column="57" selection-start-line="23" selection-start-column="57" selection-end-line="23" selection-end-column="57" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neteasenews/spider/moreSpider.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-558">
-          <caret line="5" column="66" selection-start-line="5" selection-start-column="66" selection-end-line="5" selection-end-column="66" />
         </state>
       </provider>
     </entry>
