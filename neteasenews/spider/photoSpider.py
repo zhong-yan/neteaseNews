@@ -2,8 +2,9 @@ import re
 import json
 import time
 import requests
-from neteasenews.spider.config import webdriver, options, URLs, MONGODB_TABLE_2
-from neteasenews.spider.mainSpider import updatedata
+from neteasenews.spider.config import webdriver, options, URLs, MONGODB_TABLE_2, neteasenews
+# Bug:在mainspider之间互相引用包,出现无法找到包来源(找不到解决方法,只有覆写方法,即updatedata())
+# from neteasenews.spider.mainSpider import updatedata
 
 
 # http://news.163.com/photo/#Current
@@ -55,8 +56,14 @@ def json_details(picture_url):
             'imgsum': item_info.get('imgsum'),
             'pictures': [item.get('img') for item in item_pic]
         }
-        # browser.close()
         return pic_list
+
+
+def updatedata(data, tablename):
+    if neteasenews[tablename].update({'url': data['url']}, {'$set': data}, True):
+        print('--------------------------------------------------------------------------------------\n')
+        print('更新存储到mongodb数据库成功,目前文档数:{0}\t\n\n数据展示:{1}'.format(neteasenews[tablename].find().count(), data))
+        return True
 
 
 if __name__ == '__main__':
