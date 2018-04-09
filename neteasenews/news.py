@@ -57,7 +57,7 @@ if __name__ == '__main__':
             pass
         print('开启冷更新,这些标签更新频率不大')
         list_spider = [indexspider, photospider, datablogspider, collegespider, govspider, gongyispider, mediaspider]
-        pools = Pool(6)
+        pools = Pool(7)
         pools.map(newsSpider, list_spider)
     elif keybords == 0:
         print('爬虫完毕!\t大吉大利\t今晚吃鸡')
