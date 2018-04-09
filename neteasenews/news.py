@@ -40,7 +40,8 @@ if __name__ == '__main__':
     except None:
         pass
     print('开启冷更新,这些标签更新频率不大')
-    list_spider = [indexspider, photospider, datablogspider, collegespider, govspider, gongyispider, mediaspider]
+    photospider()
+    list_spider = [indexspider, datablogspider, collegespider, govspider, gongyispider, mediaspider]
     pools = Pool(7)
     pools.map(newsSpider, list_spider)
     print('============================================================\n')
