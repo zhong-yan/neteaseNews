@@ -87,5 +87,5 @@ prefs = {
 }
 options = webdriver.ChromeOptions()
 options.add_experimental_option('prefs', prefs)
-options.add_argument('--headless')
+# options.add_argument('--headless')
 

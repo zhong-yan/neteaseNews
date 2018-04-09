@@ -13,11 +13,11 @@ datablog.create_index('url')
 
 # http://data.163.com/special/datablog/
 # 这才是真实运用selenium的力量,本来已对正则无望了.
-def get_page_source():
+def get_page_source(url):
     timeout = 0
     browser = webdriver.Chrome(chrome_options=options)
-    browser.get(URLs[6])
-    response = requests.get(URLs[6])
+    browser.get(url)
+    response = requests.get(url)
     if response.status_code == 200:
         while True:
             # 模拟JS下拉保证所有内容加载
@@ -30,7 +30,7 @@ def get_page_source():
 
 
 def datablogspider():
-    html = get_page_source()
+    html = get_page_source(URLs[6])
     page = BeautifulSoup(html, 'lxml')
     links = page.select('.post-list > li > a')
     for link in links:
@@ -60,45 +60,48 @@ def datablog_details(url):
     details_html = requests.get(url)
     details_page = BeautifulSoup(details_html.text, 'lxml')
     # 获取标题
-    infos = details_page.select('title')[0].get_text().split('_')[0]
-    # 数读1页面,网易新闻架构
-    article = details_page.select('.post_text')
-    source = details_page.select('#ne_article_source')
-    author = details_page.select('.ep-editor')
-    # 图片有一个bug: 有一些图片不在选择器里面.只有部分图片(待解决0405-10:15:50)
-    pics_in_wangyi = details_page.select('#endText > p.f_center > a > img')
-    publishtime = details_page.select('.post_time_source')
-    # 数读2页面:blog(未解决博客里面图片链接,暂时设置为None)
-    pics_in_blog = details_page.select('#endText > p > a.gallery.f_center > img')
-    contents = details_page.select('.main-content')
-    publishtimes_blog = details_page.select('#ptime')
-    # 数读平台
-    if publishtimes_blog and contents:
-        for content, publishtime in zip(contents, publishtimes_blog):
+    try:
+        infos = details_page.select('title')[0].get_text().split('_')[0]
+        # 数读1页面,网易新闻架构
+        article = details_page.select('.post_text')
+        source = details_page.select('#ne_article_source')
+        author = details_page.select('.ep-editor')
+        # 图片有一个bug: 有一些图片不在选择器里面.只有部分图片(待解决0405-10:15:50)
+        pics_in_wangyi = details_page.select('#endText > p.f_center > a > img')
+        publishtime = details_page.select('.post_time_source')
+        # 数读2页面:blog(未解决博客里面图片链接,暂时设置为None)
+        pics_in_blog = details_page.select('#endText > p > a.gallery.f_center > img')
+        contents = details_page.select('.main-content')
+        publishtimes_blog = details_page.select('#ptime')
+        # 数读平台
+        if publishtimes_blog and contents:
+            for content, publishtime in zip(contents, publishtimes_blog):
+                data = {
+                    'title': infos,
+                    'dutyeditor': '未知',
+                    'source': '数读',
+                    'publishTime': publishtime.get_text(),
+                    'pictures': [pic.get('src') for pic in pics_in_blog],
+                    'contents': [item for item in content.stripped_strings]
+                }
+                return data
+        # 网易正文
+        for art, so, au, ptime in zip(article, source, author, publishtime):
+            # 格式化时间,记得group(0),不然返回的是<_sre.SRE_Match object; span=(12, 32), match=' 2018-04-04 08:38:46' 苦逼的废物
+            format_time = re.search(r'(\d+-\d+-\d+\s\d+:\d+:\d+)', ptime.get_text()).group(0)
             data = {
+                # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
                 'title': infos,
-                'dutyeditor': '未知',
-                'source': '数读',
-                'publishTime': publishtime.get_text(),
-                'pictures': [pic.get('src') for pic in pics_in_blog],
-                'contents': [item for item in content.stripped_strings]
+                'dutyeditor': au.get_text().split('：')[1],
+                'source': so.get_text(),
+                # 'publishTime_blog': None,
+                # 'publishTime_news': format_time,
+                'publishTime': format_time,
+                # 'pictures_blog': None,
+                # 'pictures_news': [pic.get('src') for pic in pics_in_wangyi],
+                'pictures': [pic.get('src') for pic in pics_in_wangyi],
+                'contents': [page for page in art.stripped_strings][:-2]
             }
             return data
-    # 网易正文
-    for art, so, au, ptime in zip(article, source, author, publishtime):
-        # 格式化时间,记得group(0),不然返回的是<_sre.SRE_Match object; span=(12, 32), match=' 2018-04-04 08:38:46' 苦逼的废物
-        format_time = re.search(r'(\d+-\d+-\d+\s\d+:\d+:\d+)', ptime.get_text()).group(0)
-        data = {
-            # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
-            'title': infos,
-            'dutyeditor': au.get_text().split('：')[1],
-            'source': so.get_text(),
-            # 'publishTime_blog': None,
-            # 'publishTime_news': format_time,
-            'publishTime': format_time,
-            # 'pictures_blog': None,
-            # 'pictures_news': [pic.get('src') for pic in pics_in_wangyi],
-            'pictures': [pic.get('src') for pic in pics_in_wangyi],
-            'contents': [page for page in art.stripped_strings][:-2]
-        }
-        return data
+    except IndexError:
+        pass

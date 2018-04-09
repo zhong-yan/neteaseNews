@@ -121,19 +121,21 @@ def details(url):
         # 如果存在这个photoview代表是图集,分析网址而来的
         if 'photoview' in url.split('/'):
             data_list = json_details(url)
-            for img_tag, img_overview in zip(img_tags, img_overviews):
-                data_photo = {
-                    # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
-                    'title': title_more,
-                    'url': url,
-                    'desc_pictures': img_overview.get_text(),
-                    'dutyeditor': data_list['dutyeditor'],
-                    'publishTime': data_list['datetime'],
-                    'source': data_list['source'],
-                    'tag_pics': [pic for pic in img_tag.stripped_strings][:0],
-                    'pictures': data_list['pictures']
-                }
-                return data_photo
+            if data_list:
+                for img_tag, img_overview in zip(img_tags, img_overviews):
+                    data_photo = {
+                        # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
+                        'title': title_more,
+                        'url': url,
+                        'desc_pictures': img_overview.get_text(),
+                        'dutyeditor': data_list['dutyeditor'],
+                        'publishTime': data_list['datetime'],
+                        'source': data_list['source'],
+                        'tag_pics': [pic for pic in img_tag.stripped_strings][:0],
+                        'pictures': data_list['pictures'],
+                        'contents': None
+                    }
+                    return data_photo
         # 正文含有图片
         # 如果.f_center存在 代表文中有图片
         if pics:
@@ -199,12 +201,15 @@ def details(url):
 
 
 def updatedata(data, tablename):
-    if neteasenews[tablename].update({'url': data['url']}, {'$set': data}, True):
-        print('=======================================================================================\n')
-        print('更新存储到数据库成功,目前{0}的文档数:{1}\t\n'.format(tablename, neteasenews[tablename].find().count()))
-        print('=======================================================================================\n')
-        print('数据展示:\n\n', data)
-        return True
+    if data:
+        if neteasenews[tablename].update({'url': data['url']}, {'$set': data}, True):
+            print('=======================================================================================\n')
+            print('更新存储到数据库成功,目前{0}的文档数:{1}\t\n'.format(tablename, neteasenews[tablename].find().count()))
+            print('=======================================================================================\n')
+            print('数据展示:\n\n', data)
+            return True
+    else:
+        print('数据不存在,无法存储到数据库,请检查是否匹配成功')
 
 
 def savedata(data, tablename):

@@ -1,11 +1,11 @@
 import re
 from bs4 import BeautifulSoup
 import requests
-from neteasenews.spider.config import MONGODB_TABLE_0, \
-    MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs, MONGODB_TABLE_1, RANK_URL, neteasenews
+from neteasenews.spider.config import MONGODB_TABLE_0, MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, URLs, \
+    MONGODB_TABLE_1, RANK_URL, neteasenews, MONGODB_TABLE_13
 from neteasenews.spider.mainSpider import chrome_driver, details, updatedata
 from multiprocessing.pool import Pool
-
+from neteasenews.spider.datablogSpider import get_page_source
 # database config
 index = neteasenews[MONGODB_TABLE_0]
 rank = neteasenews[MONGODB_TABLE_1]
@@ -41,8 +41,7 @@ def indexspider():
     all_urls = get_index_urls()
     for item in all_urls:
         data = details(item)
-        if data:
-            updatedata(data, MONGODB_TABLE_0)
+        updatedata(data, MONGODB_TABLE_0)
 
 
 # Rank_url里面包含许多links,可以用map()方法建立进程,否则可以遍历赋予url
@@ -60,19 +59,18 @@ def get_rank_urls(url):
                 links_list.append(re_links)
     for item in links_list:
         data = details(item)
-        if data:
-            updatedata(data, MONGODB_TABLE_1)
+        updatedata(data, MONGODB_TABLE_1)
 
 
 def rankspider():
-    pool = Pool(6)
+    pool = Pool(16)
     pool.map(get_rank_urls, RANK_URL)
 
 
 # http://news.163.com/college
 def get_college_urls():
-    html_college = requests.get(URLs[10])
-    pagecollege = BeautifulSoup(html_college.text, 'lxml')
+    html_college = get_page_source(URLs[10])
+    pagecollege = BeautifulSoup(html_college, 'lxml')
     links = pagecollege.findAll('a')
     pattern_college = re.compile(r'^http://dy\.163\.com/v2/article/detail/\w+.html')
     colleges_list = []
@@ -91,19 +89,22 @@ def collegespider():
         if html.status_code == 200:
             page_college = BeautifulSoup(html.text, 'lxml')
             # 标题
-            title = page_college.select('title')[0].get_text().split('_')[0]
-            # 前言
-            font_contents = page_college.select('.intro')
-            # 内容
-            contents = page_college.select('#content')
-            for font_content, content in zip(font_contents, contents):
-                data_college = {
-                    'title': title,
-                    'articleUrl': item,
-                    'font': font_content.get_text().replace('\n', ''),
-                    'content': [page for page in content.stripped_strings]
-                }
-                updatedata(data_college, MONGODB_TABLE_10)
+            try:
+                title = page_college.select('title')[0].get_text().split('_')[0]
+                # 前言
+                font_contents = page_college.select('.intro')
+                # 内容
+                contents = page_college.select('#content')
+                for font_content, content in zip(font_contents, contents):
+                    data_college = {
+                        'title': title,
+                        'url': item,
+                        'font-contents': font_content.get_text().replace('\n', ''),
+                        'contents': [page for page in content.stripped_strings]
+                    }
+                    updatedata(data_college, MONGODB_TABLE_10)
+            except IndexError:
+                pass
 
 
 # http://gov.163.com/
@@ -170,3 +171,7 @@ def mediaspider():
     for cat in media_data:
         media_content = details(cat)
         updatedata(media_content, MONGODB_TABLE_13)
+
+
+if __name__ == '__main__':
+    collegespider()
