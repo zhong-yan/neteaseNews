@@ -6,7 +6,7 @@ from neteasenews.spider.mainsSpider import managerspider
 # 图片标签
 from neteasenews.spider.photoSpider import photospider
 # 首页,排行,新闻学院,政务,公益,媒体标签
-from neteasenews.spider.moreSpider import indexspider, rankspider, collegespider, govspider, gongyispider, mediaspider
+from neteasenews.spider.coldSpider import indexspider, rankspider, collegespider, govspider, gongyispider, mediaspider
 from multiprocessing.pool import Pool
 
 

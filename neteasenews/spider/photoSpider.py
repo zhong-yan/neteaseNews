@@ -1,16 +1,15 @@
 import re
 import json
 import requests
-from neteasenews.spider.config import webdriver, options, URLs, MONGODB_TABLE_2, neteasenews
+from neteasenews.spider.config import webdriver, options
 from multiprocessing.pool import Pool
+from neteasenews.spider.db import updatedata, MONGODB_TABLE_2
 
 
 # Bug:在mainspider之间互相引用包,出现无法找到包来源(找不到解决方法,只有覆写方法,即updatedata())
 # from neteasenews.spider.mainSpider import updatedata
 
 # database config
-pictures = neteasenews[MONGODB_TABLE_2]
-pictures.create_index('url')
 
 pic_tabs = ['http://news.163.com/photo/#Current'
             'http://news.163.com/photo/#Insight',
@@ -70,40 +69,21 @@ def photo(tab_url):
 def json_details(picture_url):
     html = get_photo_source(picture_url)
     pattern_pictures = re.compile(r'<textarea name="gallery-data" style="display:none;">(.*?)</textarea>', re.S)
-    try:
-        results = re.search(pattern_pictures, html).group(1)
-        if results:
-            result_json = json.loads(results)
-            if result_json and 'info' in result_json.keys():
-                item_info = result_json.get('info')
-                item_pic = result_json.get('list')
-                pic_list = {
-                    'title': item_info.get('setname'),
-                    'source': item_info.get('source'),
-                    'dutyeditor': item_info.get('dutyeditor'),
-                    'datetime': item_info.get('lmodify'),
-                    'imgsum': item_info.get('imgsum'),
-                    'pictures': [item.get('img') for item in item_pic],
-                    'contents': item_info.get('prevue')
-                }
-                return pic_list
-    except None:
-        pass
+    results = re.search(pattern_pictures, html)
+    if results:
+        result_json = json.loads(results.group(1))
+        if result_json and 'info' in result_json.keys():
+            item_info = result_json.get('info')
+            item_pic = result_json.get('list')
+            pic_list = {
+                'title': item_info.get('setname'),
+                'source': item_info.get('source'),
+                'dutyeditor': item_info.get('dutyeditor'),
+                'datetime': item_info.get('lmodify'),
+                'imgsum': item_info.get('imgsum'),
+                'pictures': [item.get('img') for item in item_pic],
+                'contents': item_info.get('prevue')
+            }
+            return pic_list
 
 
-def updatedata(data, tablename):
-    if data:
-        if neteasenews[tablename].update({'url': data['url']}, {'$set': data}, True):
-            print('=======================================================================================\n')
-            print('更新存储到mongodb数据库成功,目前{0}的文档数:{1}\t\n'.format(tablename, neteasenews[tablename].find().count()))
-            print('=======================================================================================\n')
-            print('数据展示:\n', data)
-
-
-def photospider():
-    pool = Pool(5)
-    pool.map(photo, pic_tabs)
-
-
-if __name__ == '__main__':
-    photospider()
