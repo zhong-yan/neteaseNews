@@ -1,32 +1,14 @@
 import time
-# 数读标签
-from neteasenews.spider.datablogSpider import datablogspider
-# 国内,国际,社会,军事,航空,无人机标签
-from neteasenews.spider.mainsSpider import managerspider
-# 图片标签
-from neteasenews.spider.photoSpider import photospider
-# 首页,排行,新闻学院,政务,公益,媒体标签
-from neteasenews.spider.coldSpider import indexspider, rankspider, collegespider, govspider, gongyispider, mediaspider
+from neteasenews.spider.coldspider import datablogspider, collegespider, govspider, gongyispider, mediaspider
+from neteasenews.spider.hotspider import hotspider, spider
+from neteasenews.spider.rankspider import rankspider
+# from neteasenews.spider.photospider import photospider
+from neteasenews.spider.config import JSON_INDEX_URLS
 from multiprocessing.pool import Pool
 
 
 # 考虑加入downloads()方法,分类下载到本地?
-def newsSpider(spidername):
-    print('============================================================\n')
-    print('neteasenews Spider is working now, give me some patience,ok?\n')
-    print('============================================================\n')
-    print('现在进行的标签:"{}",爬虫运行中.....\n'.format(spidername.__name__))
-    try:
-        spidername()
-        print('爬取"{}"成功\t\t大吉大利\t\t今晚吃鸡!'.format(spidername.__name__))
-        print('------------------------------------------------------------\n')
-        for i in range(5, 0, -1):
-            time.sleep(2)
-            print('Please wait for {}s, we will go to next step!'.format(i))
-            print('------------------------------------------------------------\n')
-    except None:
-        pass
-
+# def downloads()
 
 # 部署爬虫唯一出入口main()方法
 if __name__ == '__main__':

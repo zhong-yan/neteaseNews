@@ -1,8 +1,5 @@
-from selenium import webdriver
-
-
 BASE_URL = 'http://news.163.com/'
-# 首页ajax内容,无人机ajax
+# 首页ajax内容,无人机ajax,其实后面?callback=data_callback'可以省略
 JSON_INDEX_URLS = [
     'http://temp.163.com/special/00804KVA/cm_yaowen.js?callback=data_callback',
     'http://house.163.com/special/00078GU7/guangzhou_xw_news_v1.js?callback=data_callback',
@@ -20,7 +17,7 @@ JSON_INDEX_URLS = [
     'http://temp.163.com/special/00804KVA/cm_houseguangzhou.js?callback=data_callback',
     'http://temp.163.com/special/00804KVA/cm_hangkong.js?callback=data_callback',
     'http://temp.163.com/special/00804KVA/cm_jiankang.js?callback=data_callback',
-    # 首页没有.新增无人机,因为结构一样
+    # 新增无人机标签
     'http://news.163.com/uav/special/000189N0/uav_index.js?callback=data_callback'
 ]
 URLs = ['http://news.163.com/',
@@ -38,6 +35,7 @@ URLs = ['http://news.163.com/',
         'http://gongyi.163.com/',
         'http://media.163.com/']
 
+# 这个需要使用选择器,不能直接这样,太不自动化了,等一下嘛
 # 排行榜里面的分类
 # 进程所需的迭代参数.
 RANK_URL = ['http://news.163.com/special/0001386F/rank_news.html',
@@ -61,49 +59,14 @@ RANK_URL = ['http://news.163.com/special/0001386F/rank_news.html',
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 MONGODB_DBNAME = 'neteasenews'
+# 存储热更新的内容, 即更新频率快的
 MONGODB_TABLE_1 = 'article'
+# 存储新闻排行榜内容, 即更新频率中等
 MONGODB_TABLE_2 = 'newsrank'
-MONGODB_TABLE_3 = 'lowerupdate'
+# 存储冷更新的内容,即更新时间长的
+MONGODB_TABLE_3 = 'coldpage'
+# 存储图片数据
 MONGODB_TABLE_4 = 'picture'
 
-# # 网易新闻首页
-# MONGODB_TABLE_0 = 'index'
-# # 排行
-# MONGODB_TABLE_1 = 'rank'
-# # 图片
-# MONGODB_TABLE_2 = 'pictures'
-# # 国内
-# MONGODB_TABLE_3 = 'domestic'
-# # 国际
-# MONGODB_TABLE_4 = 'world'
-# # 社会
-# MONGODB_TABLE_5 = 'sociology'
-# # 数读
-# MONGODB_TABLE_6 = 'datablog'
-# # 军事
-# MONGODB_TABLE_7 = 'military'
-# # 航空
-# MONGODB_TABLE_8 = 'aviation'
-# # 无人机
-# MONGODB_TABLE_9 = 'uav'
-# # 新闻学院
-# MONGODB_TABLE_10 = 'college'
-# # 政务
-# MONGODB_TABLE_11 = 'government'
-# # 公益
-# MONGODB_TABLE_12 = 'gongyi'
-# # 媒体
-# MONGODB_TABLE_13 = 'media'
 
-# config chromedriver:
-prefs = {
-    'profile.default_content_setting_values': {
-        'images': 2,
-        # 'javascript': 2
-        # 'User-Agent': ua
-    }
-}
-options = webdriver.ChromeOptions()
-options.add_experimental_option('prefs', prefs)
-options.add_argument('--headless')
 

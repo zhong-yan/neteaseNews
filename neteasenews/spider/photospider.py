@@ -1,9 +1,9 @@
 import re
 import json
 import requests
-from neteasenews.spider.config import webdriver, options
+from selenium import webdriver
+from neteasenews.spider.db import updatedata, MONGODB_TABLE_4
 from multiprocessing.pool import Pool
-from neteasenews.spider.db import updatedata, MONGODB_TABLE_2
 
 
 # Bug:在mainspider之间互相引用包,出现无法找到包来源(找不到解决方法,只有覆写方法,即updatedata())
@@ -11,6 +11,19 @@ from neteasenews.spider.db import updatedata, MONGODB_TABLE_2
 
 # database config
 
+# config chromedriver:
+prefs = {
+    'profile.default_content_setting_values': {
+        'images': 2,
+        # 'javascript': 2
+        # 'User-Agent': ua
+    }
+}
+options = webdriver.ChromeOptions()
+options.add_experimental_option('prefs', prefs)
+options.add_argument('--headless')
+
+# 图片url:
 pic_tabs = ['http://news.163.com/photo/#Current'
             'http://news.163.com/photo/#Insight',
             'http://news.163.com/photo/#Week',
@@ -37,31 +50,28 @@ def photo(tab_url):
     html_photo = browser.page_source
     # 原来结束符是\n,我真是草了.
     pattern_photo = re.compile('var galleryListData = (.*?);\n', re.S)
-    try:
-        result = re.search(pattern_photo, html_photo).group(1)
-        if result:
-            photo_json = json.loads(result)
-            # json的键固定:
-            result_keys = ['ss', 'kk', 'jx', 'ch', 'js', 'hk', 'ts', 'zm']
-            if photo_json and "ss" in photo_json.keys():
-                for items in result_keys:
-                    result_items = photo_json.get(items)
-                    for item in result_items:
-                        data_list = json_details(item.get('seturl'))
-                        if data_list:
-                            data = {
-                                'title': item.get('setname'),
-                                'url': item.get('seturl'),
-                                'desc': item.get('desc'),
-                                'createdate': item.get('createdate'),
-                                'source': data_list['source'],
-                                'dutyeditor': data_list['dutyeditor'],
-                                'imgsum': item.get('imgsum'),
-                                'pictures': data_list['pictures']
-                            }
-                            updatedata(data, MONGODB_TABLE_2)
-    except None:
-        pass
+    result = re.search(pattern_photo, html_photo)
+    if result:
+        photo_json = json.loads(result.group(1))
+        # json的键固定:
+        result_keys = ['ss', 'kk', 'jx', 'ch', 'js', 'hk', 'ts', 'zm']
+        if photo_json and "ss" in photo_json.keys():
+            for items in result_keys:
+                result_items = photo_json.get(items)
+                for item in result_items:
+                    data_list = json_details(item.get('seturl'))
+                    if data_list:
+                        data = {
+                            'title': item.get('setname'),
+                            'url': item.get('seturl'),
+                            'desc': item.get('desc'),
+                            'createdate': item.get('createdate'),
+                            'source': data_list['source'],
+                            'dutyeditor': data_list['dutyeditor'],
+                            'imgsum': item.get('imgsum'),
+                            'pictures': data_list['pictures']
+                        }
+                        updatedata(data, MONGODB_TABLE_4)
     browser.close()
 
 
@@ -85,5 +95,11 @@ def json_details(picture_url):
                 'contents': item_info.get('prevue')
             }
             return pic_list
+
+
+def photospider():
+    pool = Pool(3)
+    pool.map(photo, pic_tabs)
+
 
 
