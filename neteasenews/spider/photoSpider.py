@@ -83,7 +83,8 @@ def json_details(picture_url):
                     'dutyeditor': item_info.get('dutyeditor'),
                     'datetime': item_info.get('lmodify'),
                     'imgsum': item_info.get('imgsum'),
-                    'pictures': [item.get('img') for item in item_pic]
+                    'pictures': [item.get('img') for item in item_pic],
+                    'contents': item_info.get('prevue')
                 }
                 return pic_list
     except None:

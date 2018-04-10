@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 from neteasenews.spider.config import MONGODB_TABLE_0, MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, URLs, \
     MONGODB_TABLE_1, RANK_URL, neteasenews, MONGODB_TABLE_13
-from neteasenews.spider.mainSpider import chrome_driver, details, updatedata
+from neteasenews.spider.mainsSpider import chrome_driver, details, updatedata
 from multiprocessing.pool import Pool
 from neteasenews.spider.datablogSpider import get_page_source
 # database config
@@ -20,28 +20,6 @@ college.create_index('url')
 government.create_index('url')
 gongyi.create_index('url')
 media.create_index('url')
-
-
-# http://news.163.com/
-def get_index_urls():
-    html_index = chrome_driver(URLs[0])
-    page_index = BeautifulSoup(html_index, 'lxml')
-    links = page_index.findAll('a')
-    pattern = re.compile(r'^http://[\w]+\.163\.com/18/\d+/\d+/\w+.html')
-    index_list = []
-    for link in links:
-        if link.get('href'):
-            if re.search(pattern, link.get('href')):
-                re_links = re.search(pattern, link.get('href')).group(0)
-                index_list.append(re_links)
-    return index_list
-
-
-def indexspider():
-    all_urls = get_index_urls()
-    for item in all_urls:
-        data = details(item)
-        updatedata(data, MONGODB_TABLE_0)
 
 
 # Rank_url里面包含许多links,可以用map()方法建立进程,否则可以遍历赋予url
