@@ -91,11 +91,20 @@ def info_dy(url_dy):
             font_contents = page_college.select('.intro')
             # 内容
             contents = page_college.select('#content')
-            for font_content, content in zip(font_contents, contents):
-                data_dy = {
-                    'title': title,
-                    'url': url_dy,
-                    'font-contents': font_content.get_text().replace('\n', ''),
-                    'contents': [page for page in content.stripped_strings]
-                }
-                return data_dy
+            if title:
+                for font_content, content in zip(font_contents, contents):
+                    data_dy = {
+                        'title': title,
+                        'url': url_dy,
+                        'font-contents': font_content.get_text().replace('\n', ''),
+                        'contents': [page for page in content.stripped_strings]
+                    }
+                    return data_dy
+            else:
+                for font_content, content in zip(font_contents, contents):
+                    data_dy_2 = {
+                        'url': url_dy,
+                        'font-contents': font_content.get_text().replace('\n', ''),
+                        'contents': [page for page in content.stripped_strings]
+                    }
+                    return data_dy_2

@@ -98,8 +98,5 @@ def json_details(picture_url):
 
 
 def photospider():
-    pool = Pool(3)
+    pool = Pool(5)
     pool.map(photo, pic_tabs)
-
-
-

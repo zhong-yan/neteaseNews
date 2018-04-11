@@ -12,6 +12,8 @@ import threading
 
 # 部署爬虫唯一出入口main()方法
 if __name__ == '__main__':
+    # 定义break条件,timeiout变量:
+    timeout = 0
     print('==============================================================\n')
     print('neteasenews Spider is working now, give me some patience,ok?\n')
     print('==============================================================\n')
@@ -22,8 +24,8 @@ if __name__ == '__main__':
     print('==============================================================\n')
     choices = int(input('请输入你的选择:\n\t\t\t'))
     print('--------------------------------------------------------------\n')
-    timeout = 0
     if choices:
+        # 如何从中断的数据开始,而不是从零开始?Redis?序列化操作?值得思考
         if choices == 1:
             while True:
                 print('All of the Spider Will Be Running, Take It Easy!!!')
@@ -82,7 +84,7 @@ if __name__ == '__main__':
                         print('Task is running now')
                 time.sleep(5)
                 timeout += 5
-                if timeout == 5:
+                if timeout == 10:
                     print('冷更新完毕')
                     print('大吉大利,今晚吃鸡')
                     print('==============================================================\n')
@@ -90,8 +92,9 @@ if __name__ == '__main__':
         elif choices == 4:
             print('暂时未做处理!因为chromedriver速度太慢了')
     time.sleep(10)
+    print('==============================================================\n')
     print('Spider will be off, wish no bugs or exceptions')
-    print('大吉大利,今晚吃鸡')
+    print('\t\t\t大吉大利\t\t今晚吃鸡')
     print('==============================================================\n')
     # 展示部分数据
 

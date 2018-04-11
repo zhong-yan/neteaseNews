@@ -2,7 +2,7 @@ import json
 import requests
 from requests.exceptions import RequestException
 from neteasenews.spider.config import JSON_INDEX_URLS
-from neteasenews.spider.contents import info_news, info_datalog, info_photoview, info_dy
+from neteasenews.spider.contents import info_news, info_datalog, info_dy, info_photoview
 from multiprocessing.pool import Pool
 from neteasenews.spider.db import updatedata, MONGODB_TABLE_1
 
@@ -46,7 +46,6 @@ def parse(url):
                     }
                     updatedata(infomation_datalog, MONGODB_TABLE_1)
                 # elif data_phtoview:
-                #     pass
                 #     infomation_photoview = {
                 #         'type': item.get('channelname'),
                 #         'title': item.get('title'),
@@ -69,10 +68,11 @@ def parse(url):
                     }
                     updatedata(infomation_dy, MONGODB_TABLE_1)
     except RequestException:
-        pass
+        print('请求失败,重试中..')
+        parse(url)
     except ConnectionError:
         print('连接失败,请重试!')
-        pass
+        parse(url)
 
 
 def get_next_urls():
@@ -121,11 +121,11 @@ def get_next_urls():
 
 
 def hotspider():
-    pool = Pool(5)
+    pool = Pool(10)
     pool.map(parse, JSON_INDEX_URLS)
 
 
 def spider():
     url_data = get_next_urls()
-    pool = Pool(5)
+    pool = Pool(10)
     pool.map(parse, url_data)
