@@ -29,32 +29,23 @@ if __name__ == '__main__':
         if choices == 1:
             while True:
                 print('All of the Spider Will Be Running, Take It Easy!!!')
-                try:
-                    spider()
-                except None:
-                    pass
+                spider()
                 time.sleep(5)
-                try:
-                    rankspider()
-                except None:
-                    pass
+                rankspider()
                 time.sleep(5)
-                try:
-                    task_datablog = threading.Thread(target=datablogspider)
-                    task_colleges = threading.Thread(target=collegespider)
-                    task_gov = threading.Thread(target=govspider)
-                    task_gongyi = threading.Thread(target=gongyispider)
-                    task_media = threading.Thread(target=mediaspider)
-                    tasks = [task_datablog, task_colleges, task_gov, task_gongyi, task_media]
-                    for task in tasks:
-                        task.start()
-                    for task_ in tasks:
-                        task_.join()
-                    for task_run in tasks:
-                        if task_run.is_alive():
-                            print('Task is running now')
-                except None:
-                    pass
+                task_datablog = threading.Thread(target=datablogspider)
+                task_colleges = threading.Thread(target=collegespider)
+                task_gov = threading.Thread(target=govspider)
+                task_gongyi = threading.Thread(target=gongyispider)
+                task_media = threading.Thread(target=mediaspider)
+                tasks = [task_datablog, task_colleges, task_gov, task_gongyi, task_media]
+                for task in tasks:
+                    task.start()
+                for task_ in tasks:
+                    task_.join()
+                for task_run in tasks:
+                    if task_run.is_alive():
+                        print('Task is running now')
                 time.sleep(5)
                 timeout += 5
                 if timeout == 10:
@@ -64,14 +55,8 @@ if __name__ == '__main__':
                     break
         elif choices == 2:
             while True:
-                try:
-                    hotspider()
-                except None:
-                    pass
-                try:
-                    rankspider()
-                except None:
-                    pass
+                hotspider()
+                rankspider()
                 # 理论上新闻更新速度根本没这么快,10S一篇新闻...666
                 print('please wait for 10s,it will run again!!')
                 time.sleep(10)
@@ -84,22 +69,19 @@ if __name__ == '__main__':
                     break
         elif choices == 3:
             while True:
-                try:
-                    task_datablog = threading.Thread(target=datablogspider)
-                    task_colleges = threading.Thread(target=collegespider)
-                    task_gov = threading.Thread(target=govspider)
-                    task_gongyi = threading.Thread(target=gongyispider)
-                    task_media = threading.Thread(target=mediaspider)
-                    tasks = [task_datablog, task_colleges, task_gov, task_gongyi, task_media]
-                    for task in tasks:
-                        task.start()
-                    for task_ in tasks:
-                        task_.join()
-                    for task_run in tasks:
-                        if task_run.is_alive():
-                            print('Task is running now')
-                except None:
-                    pass
+                task_datablog = threading.Thread(target=datablogspider)
+                task_colleges = threading.Thread(target=collegespider)
+                task_gov = threading.Thread(target=govspider)
+                task_gongyi = threading.Thread(target=gongyispider)
+                task_media = threading.Thread(target=mediaspider)
+                tasks = [task_datablog, task_colleges, task_gov, task_gongyi, task_media]
+                for task in tasks:
+                    task.start()
+                for task_ in tasks:
+                    task_.join()
+                for task_run in tasks:
+                    if task_run.is_alive():
+                        print('Task is running now')
                 time.sleep(5)
                 timeout += 5
                 if timeout == 10:
