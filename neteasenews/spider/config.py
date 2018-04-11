@@ -35,26 +35,6 @@ URLs = ['http://news.163.com/',
         'http://gongyi.163.com/',
         'http://media.163.com/']
 
-# 这个需要使用选择器,不能直接这样,太不自动化了,等一下嘛
-# 排行榜里面的分类
-# 进程所需的迭代参数.
-RANK_URL = ['http://news.163.com/special/0001386F/rank_news.html',
-            'http://news.163.com/special/0001386F/rank_ent.html',
-            'http://news.163.com/special/0001386F/rank_sports.html',
-            'http://money.163.com/special/002526BH/rank.html',
-            'http://news.163.com/special/0001386F/rank_tech.html',
-            'http://news.163.com/special/0001386F/rank_auto.html',
-            'http://news.163.com/special/0001386F/rank_lady.html',
-            'http://news.163.com/special/0001386F/rank_house.html',
-            'http://news.163.com/special/0001386F/game_rank.html',
-            'http://news.163.com/special/0001386F/rank_travel.html',
-            'http://news.163.com/special/0001386F/rank_edu.html',
-            'http://news.163.com/special/0001386F/rank_gongyi.html',
-            'http://news.163.com/special/0001386F/rank_campus.html',
-            'http://news.163.com/special/0001386F/rank_media.html',
-            'http://news.163.com/special/rank_m/',
-            'http://news.163.com/special/0001386F/rank_whole.html']
-
 # config mongoDB
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017

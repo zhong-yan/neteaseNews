@@ -20,7 +20,7 @@ def parse(url):
                 # 数读平台
                 data_datablog = info_datalog(item.get('docurl'))
                 # 图集
-                # data_phtoview = info_photoview(item.get('docurl'))
+                data_phtoview = info_photoview(item.get('docurl'))
                 # 网易号:
                 data_dy = info_dy(item.get('docurl'))
                 if data_news:
@@ -45,18 +45,18 @@ def parse(url):
                         'info': data_datablog
                     }
                     updatedata(infomation_datalog, MONGODB_TABLE_1)
-                # elif data_phtoview:
-                #     pass
-                #     infomation_photoview = {
-                #         'type': item.get('channelname'),
-                #         'title': item.get('title'),
-                #         'comments': item.get('tienum'),
-                #         'updatetime': item.get('time'),
-                #         'keywords': [key.get('keyname') for key in item.get('keywords')],
-                #         'url': item.get('docurl'),
-                #         'info': data_phtoview
-                #     }
-                #     updatedata(infomation_photoview, MONGODB_TABLE_1)
+                elif data_phtoview:
+                    pass
+                    infomation_photoview = {
+                        'type': item.get('channelname'),
+                        'title': item.get('title'),
+                        'comments': item.get('tienum'),
+                        'updatetime': item.get('time'),
+                        'keywords': [key.get('keyname') for key in item.get('keywords')],
+                        'url': item.get('docurl'),
+                        'info': data_phtoview
+                    }
+                    updatedata(infomation_photoview, MONGODB_TABLE_1)
                 elif data_dy:
                     infomation_dy = {
                         'type': item.get('channelname'),
@@ -69,10 +69,11 @@ def parse(url):
                     }
                     updatedata(infomation_dy, MONGODB_TABLE_1)
     except RequestException:
-        pass
+        print('请求失败,重试中..')
+        parse(url)
     except ConnectionError:
         print('连接失败,请重试!')
-        pass
+        parse(url)
 
 
 def get_next_urls():
