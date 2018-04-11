@@ -3,7 +3,7 @@ from neteasenews.spider.coldspider import datablogspider, collegespider, govspid
 from neteasenews.spider.hotspider import hotspider, spider
 from neteasenews.spider.rankspider import rankspider
 from neteasenews.spider.photospider import photospider
-from neteasenews.spider.db import db_img_url
+from neteasenews.spider.db import write_to_sys
 import threading
 # from multiprocessing.pool import Pool
 
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     print('1.爬虫全部运作\n')
     print('2.热更新(只更新即时性新闻)\n')
     print('3.冷更新(只更新变动频率低的新闻)\n')
-    print('4.下载图片(需要数据库中存储有适量数据)\n')
+    print('4.下载txt(需要数据库中存储有适量数据)\n')
     print('==============================================================\n')
     choices = int(input('请输入你的选择:\n\t\t\t'))
     print('--------------------------------------------------------------\n')
@@ -84,7 +84,11 @@ if __name__ == '__main__':
             print('大吉大利,今晚吃鸡')
             print('==============================================================\n')
         elif choices == 4:
-            print('暂时未做处理!因为chromedriver速度太慢了')
+            write_to_sys()
+            print('==============================================================\n')
+            print('冷更新完毕')
+            print('大吉大利,今晚吃鸡')
+            print('==============================================================\n')
     time.sleep(10)
     print('==============================================================\n')
     print('Spider will be off, wish no bugs or exceptions')

@@ -38,5 +38,25 @@ def db_img_url():
     return pictures
 
 
-if __name__ == '__main__':
-    db_img_url()
+def write_to_sys():
+    for item in article.find():
+        try:
+            if item['info']['contents']:
+                with open(r'D:\neteasenews download\article\{}.txt'.format(item['title']), 'w', encoding='utf-8') as f:
+                        f.write(str(item['info']['contents']))
+        except OSError:
+            pass
+    for item_ in coldpage.find():
+        try:
+            if item_['contents']:
+                with open(r'D:\neteasenews download\coldpage\{}.txt'.format(item_['title']), 'w', encoding='utf-8') as f:
+                        f.write(str(item_['contents']))
+        except OSError:
+            pass
+    for item_l in newsrank.find():
+        try:
+            if item_l['contents']:
+                with open(r'D:\neteasenews download\coldpage\{}.txt'.format(item_l['title']), 'w', encoding='utf-8') as f:
+                        f.write(str(item_l['contents']))
+        except OSError:
+            pass
