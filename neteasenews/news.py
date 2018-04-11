@@ -54,41 +54,34 @@ if __name__ == '__main__':
                     print('==============================================================\n')
                     break
         elif choices == 2:
-            while True:
-                hotspider()
-                rankspider()
-                # 理论上新闻更新速度根本没这么快,10S一篇新闻...666
-                print('please wait for 10s,it will run again!!')
-                time.sleep(10)
-                timeout += 10
-                # 一分钟结束,事实上并没有这么多更新快的新闻
-                if timeout == 20:
-                    print('热更新完毕')
-                    print('大吉大利,今晚吃鸡')
-                    print('==============================================================\n')
-                    break
+            hotspider()
+            rankspider()
+            # 理论上新闻更新速度根本没这么快,10S一篇新闻...666
+            print('please wait for 10s,it will run again!!')
+            time.sleep(10)
+            print('==============================================================\n')
+            print('热更新完毕')
+            print('大吉大利,今晚吃鸡')
+            print('==============================================================\n')
         elif choices == 3:
-            while True:
-                task_datablog = threading.Thread(target=datablogspider)
-                task_colleges = threading.Thread(target=collegespider)
-                task_gov = threading.Thread(target=govspider)
-                task_gongyi = threading.Thread(target=gongyispider)
-                task_media = threading.Thread(target=mediaspider)
-                tasks = [task_datablog, task_colleges, task_gov, task_gongyi, task_media]
-                for task in tasks:
-                    task.start()
-                for task_ in tasks:
-                    task_.join()
-                for task_run in tasks:
-                    if task_run.is_alive():
-                        print('Task is running now')
-                time.sleep(5)
-                timeout += 5
-                if timeout == 10:
-                    print('冷更新完毕')
-                    print('大吉大利,今晚吃鸡')
-                    print('==============================================================\n')
-                    break
+            task_datablog = threading.Thread(target=datablogspider)
+            task_colleges = threading.Thread(target=collegespider)
+            task_gov = threading.Thread(target=govspider)
+            task_gongyi = threading.Thread(target=gongyispider)
+            task_media = threading.Thread(target=mediaspider)
+            tasks = [task_datablog, task_colleges, task_gov, task_gongyi, task_media]
+            for task in tasks:
+                task.start()
+            for task_ in tasks:
+                task_.join()
+            for task_run in tasks:
+                if task_run.is_alive():
+                    print('Task is running now')
+            time.sleep(5)
+            print('==============================================================\n')
+            print('冷更新完毕')
+            print('大吉大利,今晚吃鸡')
+            print('==============================================================\n')
         elif choices == 4:
             print('暂时未做处理!因为chromedriver速度太慢了')
     time.sleep(10)

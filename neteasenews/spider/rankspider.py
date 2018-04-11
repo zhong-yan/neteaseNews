@@ -101,3 +101,4 @@ def rankspider():
     rank_urls = get_rank_urls()
     pool = Pool(5)
     pool.map(parse_rank, rank_urls)
+    pool.join()
