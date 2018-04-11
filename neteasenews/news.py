@@ -2,14 +2,17 @@ import time
 from neteasenews.spider.coldspider import datablogspider, collegespider, govspider, gongyispider, mediaspider
 from neteasenews.spider.hotspider import hotspider, spider
 from neteasenews.spider.rankspider import rankspider
-# from neteasenews.spider.photospider import photospider
+from neteasenews.spider.photospider import photospider
+from neteasenews.spider.db import db_img_url
 import threading
 # from multiprocessing.pool import Pool
 
 
 # 考虑加入downloads()方法,分类下载到本地?
-# def downloads()
-
+# def downloads():
+#     imgs = db_img_url()
+#     for item in imgs:
+#
 # 部署爬虫唯一出入口main()方法
 if __name__ == '__main__':
     # 定义break条件,timeiout变量:
@@ -20,39 +23,35 @@ if __name__ == '__main__':
     print('1.爬虫全部运作\n')
     print('2.热更新(只更新即时性新闻)\n')
     print('3.冷更新(只更新变动频率低的新闻)\n')
-    print('4.下载图集(需要数据库中存储有适量数据)\n')
+    print('4.下载图片(需要数据库中存储有适量数据)\n')
     print('==============================================================\n')
     choices = int(input('请输入你的选择:\n\t\t\t'))
     print('--------------------------------------------------------------\n')
     if choices:
         # 如何从中断的数据开始,而不是从零开始?Redis?序列化操作?值得思考
         if choices == 1:
-            while True:
-                print('All of the Spider Will Be Running, Take It Easy!!!')
-                spider()
-                time.sleep(5)
-                rankspider()
-                time.sleep(5)
-                task_datablog = threading.Thread(target=datablogspider)
-                task_colleges = threading.Thread(target=collegespider)
-                task_gov = threading.Thread(target=govspider)
-                task_gongyi = threading.Thread(target=gongyispider)
-                task_media = threading.Thread(target=mediaspider)
-                tasks = [task_datablog, task_colleges, task_gov, task_gongyi, task_media]
-                for task in tasks:
-                    task.start()
-                for task_ in tasks:
-                    task_.join()
-                for task_run in tasks:
-                    if task_run.is_alive():
-                        print('Task is running now')
-                time.sleep(5)
-                timeout += 5
-                if timeout == 10:
-                    print('Spider will be off, wish no bugs or exceptions')
-                    print('大吉大利,今晚吃鸡')
-                    print('==============================================================\n')
-                    break
+            print('All of the Spider Will Be Running, Take It Easy!!!')
+            spider()
+            time.sleep(25)
+            rankspider()
+            time.sleep(5)
+            task_datablog = threading.Thread(target=datablogspider)
+            task_colleges = threading.Thread(target=collegespider)
+            task_gov = threading.Thread(target=govspider)
+            task_gongyi = threading.Thread(target=gongyispider)
+            task_media = threading.Thread(target=mediaspider)
+            tasks = [task_datablog, task_colleges, task_gov, task_gongyi, task_media]
+            for task in tasks:
+                task.start()
+            for task_ in tasks:
+                task_.join()
+            for task_run in tasks:
+                if task_run.is_alive():
+                    print('Task is running now')
+            time.sleep(5)
+            print('Spider will be off, wish no bugs or exceptions')
+            print('大吉大利,今晚吃鸡')
+            print('==============================================================\n')
         elif choices == 2:
             hotspider()
             rankspider()
@@ -77,6 +76,8 @@ if __name__ == '__main__':
             for task_run in tasks:
                 if task_run.is_alive():
                     print('Task is running now')
+            time.sleep(10)
+            photospider()
             time.sleep(5)
             print('==============================================================\n')
             print('冷更新完毕')
@@ -90,6 +91,3 @@ if __name__ == '__main__':
     print('\t\t\t大吉大利\t\t今晚吃鸡')
     print('==============================================================\n')
     # 展示部分数据
-
-
-

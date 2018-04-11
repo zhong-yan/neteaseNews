@@ -129,4 +129,4 @@ def spider():
     url_data = get_next_urls()
     pool = Pool(5)
     pool.map(parse, url_data)
-    pool.join()
+    # pool.join()

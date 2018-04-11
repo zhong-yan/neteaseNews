@@ -26,3 +26,17 @@ def updatedata(data, tablename):
     else:
         print('数据不存在,无法存储到数据库,请检查是否匹配成功')
 
+
+def db_img_url():
+    pictures = []
+    for item in article.find():
+        if item['info']:
+            pictures.append(p['pictures'] for p in item['info'])
+    for i in newsrank.find():
+        if i['pictures']:
+            pictures.append(i['pictures'])
+    return pictures
+
+
+if __name__ == '__main__':
+    db_img_url()
