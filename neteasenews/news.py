@@ -5,14 +5,8 @@ from neteasenews.spider.rankspider import rankspider
 from neteasenews.spider.photospider import photospider
 from neteasenews.spider.db import write_to_sys
 import threading
-# from multiprocessing.pool import Pool
 
 
-# 考虑加入downloads()方法,分类下载到本地?
-# def downloads():
-#     imgs = db_img_url()
-#     for item in imgs:
-#
 # 部署爬虫唯一出入口main()方法
 if __name__ == '__main__':
     # 定义break条件,timeiout变量:
@@ -86,7 +80,7 @@ if __name__ == '__main__':
         elif choices == 4:
             write_to_sys()
             print('==============================================================\n')
-            print('冷更新完毕')
+            print('下载完毕')
             print('大吉大利,今晚吃鸡')
             print('==============================================================\n')
     time.sleep(10)
