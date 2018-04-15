@@ -1,3 +1,5 @@
+from selenium import webdriver
+
 BASE_URL = 'http://news.163.com/'
 # 首页ajax内容,无人机ajax,其实后面?callback=data_callback'可以省略
 # 如何快速找到json链接?现在只能手工完成..添加每一个json文档
@@ -97,6 +99,18 @@ MONGODB_TABLE_2 = 'newsrank'
 MONGODB_TABLE_3 = 'coldpage'
 # 存储图片数据
 MONGODB_TABLE_4 = 'picture'
+
+# config chromedriver:
+prefs = {
+    'profile.default_content_setting_values': {
+        'images': 2,
+        # 'javascript': 2
+        # 'User-Agent': ua
+    }
+}
+options = webdriver.ChromeOptions()
+options.add_experimental_option('prefs', prefs)
+options.add_argument('--headless')
 
 
 

@@ -1,6 +1,11 @@
+import json
+import re
+
 import requests
 from bs4 import BeautifulSoup
-from neteasenews.spider.photospider import json_details
+from selenium import webdriver
+from neteasenews.spider.config import options
+
 
 # 如何书写剔除带有视频信息的内容,保留正文,这是个值得思考的方法
 # def video():
@@ -111,3 +116,28 @@ def info_dy(url_dy):
                         return data_dy_2
             except IndexError:
                 pass
+
+
+def json_details(picture_url):
+    browser = webdriver.Chrome(chrome_options=options)
+    browser.get(picture_url)
+    response = requests.get(picture_url)
+    if response.status_code == 200:
+        html = browser.page_source
+        pattern_pictures = re.compile(r'<textarea name="gallery-data" style="display:none;">(.*?)</textarea>', re.S)
+        results = re.search(pattern_pictures, html)
+        if results:
+            result_json = json.loads(results.group(1))
+            if result_json and 'info' in result_json.keys():
+                item_info = result_json.get('info')
+                item_pic = result_json.get('list')
+                pic_list = {
+                    'title': item_info.get('setname'),
+                    'source': item_info.get('source'),
+                    'dutyeditor': item_info.get('dutyeditor'),
+                    'datetime': item_info.get('lmodify'),
+                    'imgsum': item_info.get('imgsum'),
+                    'pictures': [item.get('img') for item in item_pic],
+                    'contents': item_info.get('prevue')
+                }
+                return pic_list
