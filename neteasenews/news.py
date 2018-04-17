@@ -1,7 +1,7 @@
 import time
 from neteasenews.spider.coldspider import datablogspider, collegespider, govspider, gongyispider, mediaspider
 from neteasenews.spider.hotspider import hotspider, spider, rankspider, photospider
-from neteasenews.spider.db import write_to_sys, db_img, pic_to_sys
+from neteasenews.spider.db import write_to_sys, pic_to_sys
 import threading
 
 
@@ -26,7 +26,10 @@ if __name__ == '__main__':
             # 获取所有json文档信息和跳转内容
             spider()
             # 获取排行榜内容
+            print('更新各地和各分类新闻首页成功')
+            print('爬取新闻排行榜')
             rankspider()
+            photospider()
             # 获取数读,新闻学院,政务,公益,媒体导航标签里面的内容,开启多线程.
             task_datablog = threading.Thread(target=datablogspider)
             task_colleges = threading.Thread(target=collegespider)
@@ -48,7 +51,7 @@ if __name__ == '__main__':
         elif choices == 2:
             # 只更新首页推荐内容
             hotspider()
-            rankspider()
+            print('爬取网易新闻首页新闻成功')
             # 理论上新闻更新速度根本没这么快,10S一篇新闻...666
             print('please wait for 10s,it will run again!!')
             time.sleep(10)
@@ -73,8 +76,6 @@ if __name__ == '__main__':
             time.sleep(10)
             # 从网站获取pictures
             photospider()
-            # 从数据库获取pictures
-            db_img()
             time.sleep(5)
             print('==============================================================\n')
             print('冷更新完毕')
@@ -93,3 +94,5 @@ if __name__ == '__main__':
     print('\t\t\t大吉大利\t\t今晚吃鸡')
     print('==============================================================\n')
     # 展示部分数据
+# bs4.FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do you need to install a parser library?
+# 解决: pip install lxml

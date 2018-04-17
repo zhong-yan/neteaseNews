@@ -38,8 +38,8 @@ def datablogspider():
                         data_datablog = {
                             'title': item.get('title'),
                             'url': item.get('url'),
-                            'img': item.get('img'),
-                            'time': item.get('time'),
+                            'pictures': item.get('img'),
+                            'updatetime': item.get('time'),
                             'comments': item.get('comment'),
                             # 只需要内容,不包含图片
                             'contents': d_datablog['contents']
@@ -58,7 +58,7 @@ def details(url):
     page = BeautifulSoup(response.text, 'lxml')
     try:
         # 标题
-        title = page.select('title')[0].get_text()
+        title = page.findAll('title')[0].get_text()
         data_news = info_news(url)
         data_blog = info_datalog(url)
         data_photo = info_photoview(url)
@@ -82,7 +82,7 @@ def details(url):
                     'url': url,
                     'source': '数读',
                     'comments': data_blog['comments'],
-                    'publishTime': data_blog['publishTime'],
+                    'updatetime': data_blog['updatetime'],
                     'pictures': data_blog['pictures'],
                     'contents': data_blog['contents']
                 }
@@ -93,7 +93,7 @@ def details(url):
                     'title': title,
                     'url': url,
                     'dutyeditor': data_photo['dutyeditor'],
-                    'datetime': data_photo['datetime'],
+                    'updatetime': data_photo['updatetime'],
                     'source': data_photo['source'],
                     'pictures': data_photo['pictures'],
                     'contents': data_photo['contents']
@@ -104,8 +104,7 @@ def details(url):
                 data_dy = {
                     'title': title,
                     'url': url,
-                    # 文章摘要
-                    'font-contents': data_dy['font-contents'],
+                    'pictures': data_dy['pictures'],
                     'contents': data_dy['contents']
                 }
                 return data_dy

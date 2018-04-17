@@ -93,12 +93,10 @@ MONGODB_PORT = 27017
 MONGODB_DBNAME = 'neteasenews'
 # 存储热更新的内容, 即更新频率快的
 MONGODB_TABLE_1 = 'article'
-# 存储新闻排行榜内容, 即更新频率中等
-MONGODB_TABLE_2 = 'newsrank'
 # 存储冷更新的内容,即更新时间长的
-MONGODB_TABLE_3 = 'coldpage'
+MONGODB_TABLE_2 = 'coldpage'
 # 存储图片数据
-MONGODB_TABLE_4 = 'picture'
+MONGODB_TABLE_3 = 'picture'
 
 # config chromedriver:
 prefs = {

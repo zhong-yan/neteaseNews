@@ -34,40 +34,43 @@ def parse(url):
                     infomation_news = {
                         # 标题:
                         'title': item.get('title'),
+                        # 文章url,数据库文档索引
+                        'url': item.get('docurl'),
+                        # 文章信息,包含内容,来源,责任编辑,文中图片等
+                        'info': data_news,
+                        # 关键字
+                        'keywords': [key.get('keyname') for key in item.get('keywords')],
                         # 分类:
                         'label': item.get('label'),
                         # 评论量:
                         'comments': item.get('tienum'),
                         # 更新时间:
-                        'updatetime': item.get('time'),
-                        # 关键字
-                        'keywords': [key.get('keyname') for key in item.get('keywords')],
-                        # 文章url,数据库文档索引
-                        'url': item.get('docurl'),
-                        # 文章信息,包含内容,来源,责任编辑,文中图片等
-                        'info': data_news
+                        'updatetime': item.get('time')
                     }
                     updatedata(infomation_news, MONGODB_TABLE_1)
                 elif data_datablog:
                     infomation_datalog = {
                         'title': item.get('title'),
+                        'url': item.get('docurl'),
+                        'info': data_datablog,
+                        'keywords': [key.get('keyname') for key in item.get('keywords')],
                         'label': item.get('label'),
                         'comments': item.get('tienum'),
-                        'updatetime': item.get('time'),
-                        'keywords': [key.get('keyname') for key in item.get('keywords')],
-                        'url': item.get('docurl'),
-                        'info': data_datablog
+                        'updatetime': item.get('time')
                     }
                     updatedata(infomation_datalog, MONGODB_TABLE_1)
                 elif data_dy:
                     infomation_dy = {
                         'title': item.get('title'),
+                        'url': item.get('docurl'),
+                        'info': {
+                            'pictures': data_dy['pictures'],
+                            'contents': data_dy['contents']
+                        },
+                        'keywords': [key.get('keyname') for key in item.get('keywords')],
                         'label': item.get('label'),
                         'comments': item.get('tienum'),
-                        'updatetime': item.get('time'),
-                        'keywords': [key.get('keyname') for key in item.get('keywords')],
-                        'url': item.get('docurl'),
-                        'info': data_dy
+                        'updatetime': item.get('time')
                     }
                     updatedata(infomation_dy, MONGODB_TABLE_1)
         elif response.status_code == 404:
@@ -166,49 +169,32 @@ def parse_rank(url):
         page = BeautifulSoup(response.text, 'lxml')
         try:
             # 标题
-            title = page.select('title')[0].get_text()
-            data_blog = info_datalog(item)
+            title = page.findAll('title')[0].get_text()
+            data_blogs = info_datalog(item)
             data_news = info_news(item)
-            data_photo = info_photoview(item)
+            data_photos = info_photoview(item)
             if title:
                 if data_news:
                     data_new = {
                         'title': title,
                         'url':  item,
-                        'info': {
-                            'dutyeditor': data_news['dutyeditor'],
-                            'source': data_news['source'],
-                            'pictures': data_news['pictures'],
-                            'contents': data_news['contents']
-                        }
+                        'info': data_news
                     }
                     updatedata(data_new, MONGODB_TABLE_1)
-                elif data_blog:
-                    data_blogs = {
+                elif data_blogs:
+                    data_blog = {
                         'title': title,
                         'url': item,
-                        'info': {
-                            'source': '数读',
-                            'comments': data_blog['comments'],
-                            'publishTime': data_blog['publishTime'],
-                            'pictures': data_blog['pictures'],
-                            'contents': data_blog['contents']
-                        }
+                        'info': data_blogs
                     }
-                    updatedata(data_blogs, MONGODB_TABLE_1)
-                elif data_photo:
-                    data_photos = {
+                    updatedata(data_blog, MONGODB_TABLE_1)
+                elif data_photos:
+                    data_photo = {
                         'title': title,
                         'url': item,
-                        'info': {
-                            'dutyeditor': data_photo['dutyeditor'],
-                            'datetime': data_photo['datetime'],
-                            'source': data_photo['source'],
-                            'pictures': data_photo['pictures'],
-                            'contents': data_photo['contents']
-                        }
+                        'info': data_photos
                     }
-                    updatedata(data_photos, MONGODB_TABLE_1)
+                    updatedata(data_photo, MONGODB_TABLE_1)
         except IndexError:
             print('无法获取该页面标题')
             pass
@@ -282,7 +268,7 @@ def json_details(picture_url):
                 'title': item_info.get('setname'),
                 'source': item_info.get('source'),
                 'dutyeditor': item_info.get('dutyeditor'),
-                'datetime': item_info.get('lmodify'),
+                'updatetime': item_info.get('lmodify'),
                 'imgsum': item_info.get('imgsum'),
                 'pictures': [item.get('img') for item in item_pic],
                 'contents': item_info.get('prevue')

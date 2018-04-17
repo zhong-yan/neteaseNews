@@ -54,7 +54,7 @@ def info_photoview(url_photo):
         if data_list:
             data_photo = {
                 'dutyeditor': data_list['dutyeditor'],
-                'datetime': data_list['datetime'],
+                'updatetime': data_list['datetime'],
                 'source': data_list['source'],
                 'pictures': data_list['pictures'],
                 'contents': data_list['contents']
@@ -76,7 +76,7 @@ def info_datalog(url_blog):
             data_blog = {
                 'source': '数读',
                 'comments': comment.get_text(),
-                'publishTime': publishtime.get_text(),
+                'updatetime': publishtime.get_text(),
                 'pictures': [pic.get('src') for pic in pics],
                 'contents': [item for item in content.stripped_strings]
             }
@@ -91,28 +91,26 @@ def info_dy(url_dy):
             page_college = BeautifulSoup(html.text, 'lxml')
             try:
                 # 标题
-                title = page_college.select('title')[0].get_text()
+                title = page_college.findAll('title')[0].get_text()
                 # 前言
                 font_contents = page_college.select('.intro')
                 # 内容
                 contents = page_college.select('#content')
+                # 图片
+                pictures = page_college.select('#content > p > img')
                 if title:
                     for font_content, content in zip(font_contents, contents):
+                        font_c = font_content.get_text().replace('\n', '')
+                        next_contents = [page for page in content.stripped_strings]
+                        # 前言+正文等同文章主体
+                        all_content = font_c + next_contents
                         data_dy = {
                             'title': title,
                             'url': url_dy,
-                            'font-contents': font_content.get_text().replace('\n', ''),
-                            'contents': [page for page in content.stripped_strings]
+                            'pictures': [item.get('src') for item in pictures if pictures],
+                            'contents': all_content
                         }
                         return data_dy
-                else:
-                    for font_content, content in zip(font_contents, contents):
-                        data_dy_2 = {
-                            'url': url_dy,
-                            'font-contents': font_content.get_text().replace('\n', ''),
-                            'contents': [page for page in content.stripped_strings]
-                        }
-                        return data_dy_2
             except IndexError:
                 pass
 
