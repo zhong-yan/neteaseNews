@@ -110,6 +110,7 @@ prefs = {
 }
 options = webdriver.ChromeOptions()
 options.add_experimental_option('prefs', prefs)
+# 开启无界面模式
 options.add_argument('--headless')
 
 

@@ -1,7 +1,7 @@
 import time
 from neteasenews.spider.coldspider import datablogspider, collegespider, govspider, gongyispider, mediaspider
 from neteasenews.spider.hotspider import hotspider, spider, rankspider, photospider
-from neteasenews.spider.db import write_to_sys
+from neteasenews.spider.db import write_to_sys, db_img, pic_to_sys
 import threading
 
 
@@ -23,10 +23,11 @@ if __name__ == '__main__':
         # 如何从中断的数据开始,而不是从零开始?Redis?序列化操作?值得思考
         if choices == 1:
             print('All of the Spider Will Be Running, Take It Easy!!!')
+            # 获取所有json文档信息和跳转内容
             spider()
-            time.sleep(25)
+            # 获取排行榜内容
             rankspider()
-            time.sleep(5)
+            # 获取数读,新闻学院,政务,公益,媒体导航标签里面的内容,开启多线程.
             task_datablog = threading.Thread(target=datablogspider)
             task_colleges = threading.Thread(target=collegespider)
             task_gov = threading.Thread(target=govspider)
@@ -45,6 +46,7 @@ if __name__ == '__main__':
             print('大吉大利,今晚吃鸡')
             print('==============================================================\n')
         elif choices == 2:
+            # 只更新首页推荐内容
             hotspider()
             rankspider()
             # 理论上新闻更新速度根本没这么快,10S一篇新闻...666
@@ -69,7 +71,10 @@ if __name__ == '__main__':
                 if task_run.is_alive():
                     print('Task is running now')
             time.sleep(10)
+            # 从网站获取pictures
             photospider()
+            # 从数据库获取pictures
+            db_img()
             time.sleep(5)
             print('==============================================================\n')
             print('冷更新完毕')
@@ -77,6 +82,7 @@ if __name__ == '__main__':
             print('==============================================================\n')
         elif choices == 4:
             write_to_sys()
+            pic_to_sys()
             print('==============================================================\n')
             print('下载完毕')
             print('大吉大利,今晚吃鸡')

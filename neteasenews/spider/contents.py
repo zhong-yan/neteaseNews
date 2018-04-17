@@ -1,6 +1,5 @@
 import json
 import re
-
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -118,6 +117,7 @@ def info_dy(url_dy):
                 pass
 
 
+# 处理源代码里面的js代码
 def json_details(picture_url):
     browser = webdriver.Chrome(chrome_options=options)
     browser.get(picture_url)

@@ -3,7 +3,7 @@ import re
 from bs4 import BeautifulSoup
 import requests
 from requests.exceptions import RequestException
-from neteasenews.spider.db import MONGODB_TABLE_3, updatedata
+from neteasenews.spider.db import MONGODB_TABLE_2, updatedata
 from neteasenews.spider.config import URLs
 from neteasenews.spider.contents import info_dy, info_photoview, info_news, info_datalog
 
@@ -23,12 +23,12 @@ def datablogspider():
             pattern = re.compile(r'var ohnofuchlist=\[(.*?)"a"\];', re.S)
             result = re.search(pattern, html.text)
             if result:
-                # 后面多了一个逗号,我真是草你麻痹, 烦 烦 烦 烦,如何去掉最后一个逗号,字符串切片,没有别的方法了 我算是服了
+                # js代码最后多了一个逗号,如何去掉最后一个逗号,字符串切片
                 results = result.group(1)[:-6]
                 results_add = '[' + results + ']'
                 # 解决单引号包含数字
                 result_num = results_add.replace('"comment":\'', '"comment":').replace('\',', ',')
-                # 解决单引号包含汉字,替换成None, keyword,老子不要你了,艹 耗费我2个小时转换你,你也是厉害
+                # 解决单引号包含汉字,替换成None
                 results_json = re.sub('\'.*?\'', '\"None\"', result_num)
                 # 出现json.decoder.JSONDecodeError,证明要转换的字符串不符合json格式.卧槽
                 js_result = json.loads(results_json)
@@ -44,7 +44,7 @@ def datablogspider():
                             # 只需要内容,不包含图片
                             'contents': d_datablog['contents']
                         }
-                        updatedata(data_datablog, MONGODB_TABLE_3)
+                        updatedata(data_datablog, MONGODB_TABLE_2)
     except ConnectionError:
         print('网络连接失败')
         datablogspider()
@@ -104,6 +104,7 @@ def details(url):
                 data_dy = {
                     'title': title,
                     'url': url,
+                    # 文章摘要
                     'font-contents': data_dy['font-contents'],
                     'contents': data_dy['contents']
                 }
@@ -140,7 +141,7 @@ def collegespider():
     college_data = get_college_urls()
     for item in college_data:
         data_college = info_dy(item)
-        updatedata(data_college, MONGODB_TABLE_3)
+        updatedata(data_college, MONGODB_TABLE_2)
 
 
 # http://gov.163.com/
@@ -170,7 +171,7 @@ def govspider():
     gov_data = get_gov_url()
     for link in gov_data:
         gov_content = details(link)
-        updatedata(gov_content, MONGODB_TABLE_3)
+        updatedata(gov_content, MONGODB_TABLE_2)
 
 
 # http://gongyi.163.com/
@@ -200,7 +201,7 @@ def gongyispider():
     gongyi_data = get_gongyi_url()
     for url in gongyi_data:
         gongyi_content = details(url)
-        updatedata(gongyi_content, MONGODB_TABLE_3)
+        updatedata(gongyi_content, MONGODB_TABLE_2)
 
 
 # http://media.163.com/
@@ -230,4 +231,4 @@ def mediaspider():
     media_data = get_media_url()
     for cat in media_data:
         media_content = details(cat)
-        updatedata(media_content, MONGODB_TABLE_3)
+        updatedata(media_content, MONGODB_TABLE_2)
