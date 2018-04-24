@@ -1,16 +1,101 @@
-import re
 import json
+import re
 import requests
-from requests.exceptions import RequestException
 from bs4 import BeautifulSoup
+from requests.exceptions import RequestException
 from multiprocessing.pool import Pool
 # 引入json文档原始链接,和webdriver配置信息
-from neteasenews.spider.config import JSON_INDEX_URLS, options
-# 处理跳转信息的方法,网易正文, 数读平台, 图集, 网易号
-from neteasenews.spider.contents import info_datalog, info_news, info_photoview, info_dy
-# 数据库处理方法,包括更新数据库
-from neteasenews.spider.db import updatedata, MONGODB_TABLE_1, MONGODB_TABLE_3
 from selenium import webdriver
+from neteasenews.spider.config import JSON_INDEX_URLS, URLs, MONGODB_TABLE_2, MONGODB_TABLE_3
+# 处理跳转信息的方法,网易正文, 数读平台, 图集, 网易号
+from neteasenews.spider.contents import info_datalog, info_news, info_dy, info_photoview, options, json_details
+# 数据库处理方法,包括更新数据库
+from neteasenews.spider.db import updatedata
+
+
+# 获取首页里面的头部导航链接.
+def top_navs():
+    navs = []
+    response = requests.get(URLs[0])
+    if response.status_code == 200:
+        page = BeautifulSoup(response.text, 'lxml')
+        nav = page.select('div.N-nav-channel.JS_NTES_LOG_FE > a')
+        for item in nav:
+            navs.append(item.get('href'))
+        return navs
+
+
+# 处理头部导航方法
+def basic(url):
+    html_index = requests.get(url)
+    try:
+        if html_index.status_code == 200:
+            page_gongyi = BeautifulSoup(html_index.text, 'lxml')
+            links = page_gongyi.findAll('a')
+            pattern_index = re.compile(r'^http://[\w]+\.163\.com/.*\.html')
+            index_list = []
+            for link in links:
+                if link.get('href'):
+                    if re.search(pattern_index, link.get('href')):
+                        re_links = re.search(pattern_index, link.get('href')).group(0)
+                        index_list.append(re_links)
+            return index_list
+            # return index_list
+    except ConnectionError:
+        print('网络连接失败')
+        basic(url)
+    except RequestException:
+        print('请求失败,重试中')
+        basic(url)
+
+
+def mainspider():
+    basic_links = []
+    nav = top_navs()
+    for item in nav:
+        basic_links.append(basic(item))
+    for item_url in basic_links:
+        response = requests.get(item_url)
+        page = BeautifulSoup(response.text, 'lxml')
+        try:
+            # 标题
+            title = page.findAll('title')[0].get_text()
+            data_blogs = info_datalog(item_url)
+            data_news = info_news(item_url)
+            data_dy = info_dy(item_url)
+            pictures = info_photoview(item_url)
+            if title:
+                if data_news:
+                    data_new = {
+                        'title': title,
+                        'url':  item_url,
+                        'info': data_news
+                    }
+                    updatedata(data_new, MONGODB_TABLE_2)
+                elif data_blogs:
+                    data_blog = {
+                        'title': title,
+                        'url': item_url,
+                        'info': data_blogs
+                    }
+                    updatedata(data_blog, MONGODB_TABLE_2)
+                elif data_dy:
+                    data_blog = {
+                        'title': title,
+                        'url': item_url,
+                        'info': data_dy
+                    }
+                    updatedata(data_blog, MONGODB_TABLE_2)
+                elif pictures:
+                    picture = {
+                        'title': title,
+                        'url': item_url,
+                        'info': pictures
+                    }
+                    updatedata(picture, MONGODB_TABLE_3)
+        except IndexError:
+            print('无法获取该页面标题')
+            pass
 
 
 # 爬取首页要闻,广州,社会,国内,国际,独家,军事,财经,科技,体育,娱乐,时尚,汽车,房产,航空,健康,无人机
@@ -28,8 +113,6 @@ def parse(url):
                 data_datablog = info_datalog(item.get('docurl'))
                 # 网易号:
                 data_dy = info_dy(item.get('docurl'))
-                # 图集(由于需要chrome渲染结果,会导致速度变慢?)
-                # 解决方案,图集交给专门处理photo的方法中,提取符合要求的URL即可.
                 if data_news:
                     infomation_news = {
                         # 标题:
@@ -47,7 +130,7 @@ def parse(url):
                         # 更新时间:
                         'updatetime': item.get('time')
                     }
-                    updatedata(infomation_news, MONGODB_TABLE_1)
+                    updatedata(infomation_news, MONGODB_TABLE_2)
                 elif data_datablog:
                     infomation_datalog = {
                         'title': item.get('title'),
@@ -58,7 +141,7 @@ def parse(url):
                         'comments': item.get('tienum'),
                         'updatetime': item.get('time')
                     }
-                    updatedata(infomation_datalog, MONGODB_TABLE_1)
+                    updatedata(infomation_datalog, MONGODB_TABLE_2)
                 elif data_dy:
                     infomation_dy = {
                         'title': item.get('title'),
@@ -72,7 +155,7 @@ def parse(url):
                         'comments': item.get('tienum'),
                         'updatetime': item.get('time')
                     }
-                    updatedata(infomation_dy, MONGODB_TABLE_1)
+                    updatedata(infomation_dy, MONGODB_TABLE_2)
         elif response.status_code == 404:
             print('该json文档不存在', url)
     # 处理请求失败异常:
@@ -127,81 +210,21 @@ def get_all_urls():
     return links
 
 
-# requests方法失效,需要用selenium库操作
-# http://news.163.com/rank/
-# 获取排行榜分类
-def get_rank_urls():
-    rank_urls = []
-    browser = webdriver.Chrome(chrome_options=options)
-    browser.get('http://news.163.com/rank/')
-    response = browser.page_source
-    page_rank = BeautifulSoup(response, 'lxml')
-    # 获取导航页所有分类link
-    nav = page_rank.select('.subNav > a')
-    for item in nav:
-        rank_urls.append(item.get('href'))
-    browser.close()
-    return rank_urls
+# 部署爬取首页json文档,因为首页展示的信息具有实时性,所以用于热更新
+def hotspider():
+    mainspider()
+    pool = Pool(10)
+    pool.map(parse, JSON_INDEX_URLS)
 
 
-# 获取每个分类的文章url
-def rank_next_url(url):
-    links_list = []
-    # 这里有时候,requests会出现连接池数量不够的情况,异常,暂时不做处理.
-    html = requests.get(url)
-    htmlpage = BeautifulSoup(html.text, 'lxml')
-    patterns = re.compile(r'^http://[\w]+\.163\.com/\d+/\d+/\d+/\w+.html')
-    links = htmlpage.findAll('a')
-    for link in links:
-        if link.get('href'):
-            if re.search(patterns, link.get('href')):
-                re_links = re.search(patterns, link.get('href')).group(0)
-                links_list.append(re_links)
-    return links_list
+# 部署爬取所有json文档,内容包含以往,现在.
+def spider():
+    mainspider()
+    url_data = get_all_urls()
+    pool = Pool(10)
+    pool.map(parse, url_data)
 
 
-# 处理每一个文章url跳转内容:
-def parse_rank(url):
-    links = rank_next_url(url)
-    for item in links:
-        # mark, 需作异常处理,或者自动操作连接池?
-        response = requests.get(item)
-        page = BeautifulSoup(response.text, 'lxml')
-        try:
-            # 标题
-            title = page.findAll('title')[0].get_text()
-            data_blogs = info_datalog(item)
-            data_news = info_news(item)
-            data_photos = info_photoview(item)
-            if title:
-                if data_news:
-                    data_new = {
-                        'title': title,
-                        'url':  item,
-                        'info': data_news
-                    }
-                    updatedata(data_new, MONGODB_TABLE_1)
-                elif data_blogs:
-                    data_blog = {
-                        'title': title,
-                        'url': item,
-                        'info': data_blogs
-                    }
-                    updatedata(data_blog, MONGODB_TABLE_1)
-                elif data_photos:
-                    data_photo = {
-                        'title': title,
-                        'url': item,
-                        'info': data_photos
-                    }
-                    updatedata(data_photo, MONGODB_TABLE_1)
-        except IndexError:
-            print('无法获取该页面标题')
-            pass
-
-
-# Bug:在mainspider之间互相引用包,出现无法找到包来源(找不到解决方法,只有覆写方法,即updatedata())
-# from neteasenews.spider.mainSpider import updatedata
 def get_photo_source(url):
     browser = webdriver.Chrome(chrome_options=options)
     browser.get(url)
@@ -253,34 +276,27 @@ def photo(tab_url):
     browser.close()
 
 
-# 针对某些网页为图片浏览形式,正则匹配关键字段,加载为json文档.
-def json_details(picture_url):
-    html = get_photo_source(picture_url)
-    # 正则匹配源代码里面的js代码并且处理并且生成json文档,这里处理操作简单.
-    pattern_pictures = re.compile(r'<textarea name="gallery-data" style="display:none;">(.*?)</textarea>', re.S)
-    results = re.search(pattern_pictures, html)
-    if results:
-        result_json = json.loads(results.group(1))
-        if result_json and 'info' in result_json.keys():
-            item_info = result_json.get('info')
-            item_pic = result_json.get('list')
-            pic_list = {
-                'title': item_info.get('setname'),
-                'source': item_info.get('source'),
-                'dutyeditor': item_info.get('dutyeditor'),
-                'updatetime': item_info.get('lmodify'),
-                'imgsum': item_info.get('imgsum'),
-                'pictures': [item.get('img') for item in item_pic],
-                'contents': item_info.get('prevue')
-            }
-            return pic_list
-
-
-# 部署爬取新闻排行榜流程:
-def rankspider():
-    rank_urls = get_rank_urls()
-    pool = Pool(5)
-    pool.map(parse_rank, rank_urls)
+# # 针对某些网页为图片浏览形式,正则匹配关键字段,加载为json文档.
+# def json_details(picture_url):
+#     html = get_photo_source(picture_url)
+#     # 正则匹配源代码里面的js代码并且处理并且生成json文档,这里处理操作简单.
+#     pattern_pictures = re.compile(r'<textarea name="gallery-data" style="display:none;">(.*?)</textarea>', re.S)
+#     results = re.search(pattern_pictures, html)
+#     if results:
+#         result_json = json.loads(results.group(1))
+#         if result_json and 'info' in result_json.keys():
+#             item_info = result_json.get('info')
+#             item_pic = result_json.get('list')
+#             pic_list = {
+#                 'title': item_info.get('setname'),
+#                 'source': item_info.get('source'),
+#                 'dutyeditor': item_info.get('dutyeditor'),
+#                 'updatetime': item_info.get('lmodify'),
+#                 'imgsum': item_info.get('imgsum'),
+#                 'pictures': [item.get('img') for item in item_pic],
+#                 'contents': item_info.get('prevue')
+#             }
+#             return pic_list
 
 
 def photospider():
@@ -313,16 +329,3 @@ def photospider():
                 'http://news.163.com/photo/#Paper']
     for item_url in pic_tabs:
         photo(item_url)
-
-
-# 部署爬取首页json文档,因为首页展示的信息具有实时性,所以用于热更新
-def hotspider():
-    pool = Pool(10)
-    pool.map(parse, JSON_INDEX_URLS)
-
-
-# 部署爬取所有json文档,内容包含以往,现在.
-def spider():
-    url_data = get_all_urls()
-    pool = Pool(10)
-    pool.map(parse, url_data)

@@ -1,8 +1,3 @@
-from selenium import webdriver
-
-BASE_URL = 'http://news.163.com/'
-# 首页ajax内容,无人机ajax,其实后面?callback=data_callback'可以省略
-# 如何快速找到json链接?现在只能手工完成..添加每一个json文档
 JSON_INDEX_URLS = [
     'http://temp.163.com/special/00804KVA/cm_yaowen.js?callback=data_callback',
     'http://house.163.com/special/00078GU7/guangzhou_xw_news_v1.js?callback=data_callback',
@@ -60,56 +55,55 @@ JSON_INDEX_URLS = [
     'http://money.163.com/special/002557S6/newsdata_gp_dy.js?callback=data_callback',
     # 科技
     'http://tech.163.com/special/00097UHL/tech_datalist.js?callback=data_callback',
-    # 全国,找不到规律,不想copy了 烦
-    'http://bendi.news.163.com/beijing/special/04388GGG/bjxinxiliu.js',
-    'http://bendi.news.163.com/shanghai/special/04188GP4/shxinxiliu.js',
-    'http://tj.news.163.com/special/04208F5D/tjxxl.js',
-    'http://bendi.news.163.com/jiangsu/special/04248H8U/njxxl.js',
-    'http://bendi.news.163.com/zhejiang/special/04098FBT/xinxiliu.js',
-    'http://sc.news.163.com/special/04268EVT/xinxiliu.js',
-    'http://bendi.news.163.com/heilongjiang/special/04238DR5/haerbin.js',
-    'http://bendi.news.163.com/jilin/special/04118E6D/center_news_cc.js',
-    'http://bendi.news.163.com/liaoning/special/04228EED/xinxiliu.js',
-    'http://bendi.news.163.com/neimengu/special/04138EHT/nmgxxl.js'
+    # 全国
+    'http://bendi.news.163.com/beijing/special/04388GGG/bjxinxiliu.js?callback=data_callback',
+    'http://bendi.news.163.com/shanghai/special/04188GP4/shxinxiliu.js?callback=data_callback',
+    'http://tj.news.163.com/special/04208F5D/tjxxl.js?callback=data_callback',
+    'http://bendi.news.163.com/jiangsu/special/04248H8U/njxxl.js?callback=data_callback',
+    'http://bendi.news.163.com/zhejiang/special/04098FBT/xinxiliu.js?callback=data_callback',
+    'http://sc.news.163.com/special/04268EVT/xinxiliu.js?callback=data_callback',
+    'http://bendi.news.163.com/heilongjiang/special/04238DR5/haerbin.js?callback=data_callback',
+    'http://bendi.news.163.com/jilin/special/04118E6D/center_news_cc.js?callback=data_callback',
+    'http://bendi.news.163.com/liaoning/special/04228EED/xinxiliu.js?callback=data_callback',
+    'http://bendi.news.163.com/neimengu/special/04138EHT/nmgxxl.js?callback=data_callback'
 ]
+BASE_URL = 'http://news.163.com/'
+
 URLs = ['http://news.163.com/',
+        # 排行
         'http://news.163.com/rank/',
+        # 图片
         'http://news.163.com/photo/#Current',
+        # 国内
         'http://news.163.com/domestic/',
+        # 国际
         'http://news.163.com/world/',
+        # 社会
         'http://news.163.com/shehui/',
+        # 数读
         'http://data.163.com/special/datablog/',
+        # 军事
         'http://war.163.com/',
+        # 航空
         'http://news.163.com/air/',
+        # 无人机
         'http://news.163.com/uav/',
+        # 新闻学院
         'http://news.163.com/college',
+        # 政务
         'http://gov.163.com/',
+        # 公益
         'http://gongyi.163.com/',
+        # 媒体
         'http://media.163.com/']
 
 # config mongoDB
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 MONGODB_DBNAME = 'neteasenews'
-# 存储热更新的内容, 即更新频率快的
+# 存储除js渲染外的内容
 MONGODB_TABLE_1 = 'article'
-# 存储冷更新的内容,即更新时间长的
-MONGODB_TABLE_2 = 'coldpage'
+# 存储js渲染的内容
+MONGODB_TABLE_2 = 'mainarticle'
 # 存储图片数据
 MONGODB_TABLE_3 = 'picture'
-
-# config chromedriver:
-prefs = {
-    'profile.default_content_setting_values': {
-        'images': 2,
-        # 'javascript': 2
-        # 'User-Agent': ua
-    }
-}
-options = webdriver.ChromeOptions()
-options.add_experimental_option('prefs', prefs)
-# 开启无界面模式
-options.add_argument('--headless')
-
-
-

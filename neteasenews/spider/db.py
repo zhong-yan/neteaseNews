@@ -1,32 +1,30 @@
 import os
-
-import pymongo
 import requests
-
+import pymongo
 from neteasenews.spider.config import MONGODB_HOST, MONGODB_PORT, MONGODB_DBNAME, MONGODB_TABLE_1, MONGODB_TABLE_2, \
     MONGODB_TABLE_3
 
-# pymongo.errors.ServerSelectionTimeoutError:数据库没有on
+
 client = pymongo.MongoClient(MONGODB_HOST, MONGODB_PORT)
 neteasenews = client[MONGODB_DBNAME]
+# 集合结构:title, url, info
 article = neteasenews[MONGODB_TABLE_1]
-# 表结构:title, label, comments, updatetime, keywords, url, info
-coldpage = neteasenews[MONGODB_TABLE_2]
-# 表结构:title, url, info
+# 集合结构:title, label, comments, updatetime, keywords, url, info
+mainarticle = neteasenews[MONGODB_TABLE_2]
+# 集合结构:title, url, info=[desc, createdate, source, dutyeditor, imgsum, pictures]
 picture = neteasenews[MONGODB_TABLE_3]
-# 表结构:title, url, info=[desc, createdate, source, dutyeditor, imgsum, pictures]
 article.create_index('url')
-coldpage.create_index('url')
+mainarticle.create_index('url')
 picture.create_index('url')
 
 
 def updatedata(data, tablename):
     if data:
         if neteasenews[tablename].update({'url': data['url']}, {'$set': data}, True):
-            print('=======================================================================================\n')
+            print('=================================================\n')
             print('更新存储到数据库成功,目前{0}的文档数:{1}\t\n'.format(tablename,
                                                         neteasenews[tablename].find().count()))
-            print('=======================================================================================\n')
+            print('=================================================\n')
             print('数据展示:\n\n', data)
             return True
     else:
@@ -34,11 +32,8 @@ def updatedata(data, tablename):
 
 
 # 文章下载(纯文或者图文)
-# 文章主体从数据库获取
-# 图片:从数据库获取链接再下载.
 def write_to_sys():
     robot = 'D:/newsdownload/article/'
-    robot_coldpage = 'D:/newsdownload/coldpage/'
     count = 0
     for item in article.find(no_cursor_timeout=True):
         try:
@@ -63,18 +58,6 @@ def write_to_sys():
                             print('正在下载{0}张图片,标题:{1}'.format(count, item['title']))
                             with open(path, 'wb') as f:
                                 f.write(html.content)
-        except OSError:
-            pass
-    for item_ in coldpage.find(no_cursor_timeout=True):
-        try:
-            if item_['contents']:
-                path_txt_cold = robot_coldpage + str(item_['title']) + '.txt'
-                if not os.path.exists(robot_coldpage):
-                    os.makedirs(robot_coldpage)
-                if not os.path.exists(path_txt_cold):
-                    with open(path_txt_cold, 'w', encoding='utf-8') as f:
-                        print('{}\t数据库转化为txt成功'.format(item_['title']))
-                        f.write(str(item_['contents']))
         except OSError:
             pass
 
