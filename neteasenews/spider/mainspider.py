@@ -6,7 +6,7 @@ from requests.exceptions import RequestException
 from multiprocessing.pool import Pool
 # 引入json文档原始链接,和webdriver配置信息
 from selenium import webdriver
-from neteasenews.spider.config import JSON_INDEX_URLS, URLs, MONGODB_TABLE_2, MONGODB_TABLE_3
+from neteasenews.spider.config import JSON_INDEX_URLS, URLs, MONGODB_TABLE_1, MONGODB_TABLE_2, MONGODB_TABLE_3
 # 处理跳转信息的方法,网易正文, 数读平台, 图集, 网易号
 from neteasenews.spider.contents import info_datalog, info_news, info_dy, info_photoview, options, json_details
 # 数据库处理方法,包括更新数据库
@@ -49,12 +49,13 @@ def basic(url):
         basic(url)
 
 
-def mainspider():
+def no_js_spider():
     basic_links = []
     nav = top_navs()
     for item in nav:
         basic_links.append(basic(item))
     for item_url in basic_links:
+        item_url = item_url.strip().decode()
         response = requests.get(item_url)
         page = BeautifulSoup(response.text, 'lxml')
         try:
@@ -71,21 +72,21 @@ def mainspider():
                         'url':  item_url,
                         'info': data_news
                     }
-                    updatedata(data_new, MONGODB_TABLE_2)
+                    updatedata(data_new, MONGODB_TABLE_1)
                 elif data_blogs:
                     data_blog = {
                         'title': title,
                         'url': item_url,
                         'info': data_blogs
                     }
-                    updatedata(data_blog, MONGODB_TABLE_2)
+                    updatedata(data_blog, MONGODB_TABLE_1)
                 elif data_dy:
                     data_blog = {
                         'title': title,
                         'url': item_url,
                         'info': data_dy
                     }
-                    updatedata(data_blog, MONGODB_TABLE_2)
+                    updatedata(data_blog, MONGODB_TABLE_1)
                 elif pictures:
                     picture = {
                         'title': title,
@@ -210,21 +211,15 @@ def get_all_urls():
     return links
 
 
-# 部署爬取首页json文档,因为首页展示的信息具有实时性,所以用于热更新
-def hotspider():
-    mainspider()
-    pool = Pool(10)
-    pool.map(parse, JSON_INDEX_URLS)
-
-
-# 部署爬取所有json文档,内容包含以往,现在.
-def spider():
-    mainspider()
+# 部署爬取首页等类似布局的标签
+def mainspider():
+    no_js_spider()
     url_data = get_all_urls()
     pool = Pool(10)
     pool.map(parse, url_data)
 
 
+# 处理图片标签
 def get_photo_source(url):
     browser = webdriver.Chrome(chrome_options=options)
     browser.get(url)
@@ -329,3 +324,7 @@ def photospider():
                 'http://news.163.com/photo/#Paper']
     for item_url in pic_tabs:
         photo(item_url)
+
+
+if __name__ == '__main__':
+    mainspider()

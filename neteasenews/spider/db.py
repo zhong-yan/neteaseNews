@@ -64,7 +64,7 @@ def write_to_sys():
 
 # 图集下载
 def pic_to_sys():
-    robot = 'D:/newsdownload/'
+    robot = 'D:/newsdownload/img/'
     count = 0
     # 暂时没找到取出某个键下所有值的数量的方法,先固定下载每个文档下5张图片.
     imgs = [1, 2, 3, 4, 5]
