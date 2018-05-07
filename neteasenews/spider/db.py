@@ -1,6 +1,5 @@
 import os
 import time
-
 import requests
 import pymongo
 from neteasenews.spider.config import MONGODB_HOST, MONGODB_PORT, MONGODB_DBNAME, MONGODB_TABLE_1, MONGODB_TABLE_2, \
@@ -90,7 +89,3 @@ def pic_to_sys():
                 print('正在下载{0}张图片,标题:{1}'.format(count, item['title']))
                 with open(path, 'wb') as f:
                     f.write(html.content)
-
-
-if __name__ == '__main__':
-    pic_to_sys()
