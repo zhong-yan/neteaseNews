@@ -129,7 +129,7 @@ def datablogspider():
                                 'updatetime': item.get('time'),
                                 'comments': item.get('comment'),
                                 # 只需要内容,不包含图片
-                                'contents': d_datablog['contents']
+                                'contents': d_datablog['info']['contents']
                             }
                         }
                         updatedata(data_datablog, MONGODB_TABLE_1)

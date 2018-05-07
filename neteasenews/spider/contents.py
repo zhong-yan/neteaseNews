@@ -100,6 +100,8 @@ def info_dy(url_dy):
                             'contents': all_content
                         }
                         return data_dy
+        except IndexError:
+            pass
         except ConnectionError:
             print('网络连接失败')
             info_dy(url_dy)

@@ -15,7 +15,6 @@ if __name__ == '__main__':
     print('2:采集即时性新闻\n')
     print('3:采集变动频率低的新闻)\n')
     print('4:数据库处理(文本和图片本地化)\n')
-    print('5:网页文本自动化采集系统测试')
     print('===========================\n')
     choices = int(input('请输入你的选择:\n\t\t\t'))
     print('----------------------------\n')
@@ -83,39 +82,6 @@ if __name__ == '__main__':
             print('=============================\n')
             print('The choice 4 :sucess to crawl ')
             print('=============================\n')
-        elif choices == 5:
-            print('\t\t\t1:采集富有js渲染的标签页,例如首页,存储到集合mainarticle\n')
-            print('\t\t\t2:采集"图片"标签以及存在别处的图片新闻链接,存储到集合picture\n')
-            print('\t\t\t3:采集"排行"标签,存储到集合article\n')
-            print('\t\t\t4:采集"数读"标签,存储到集合article\n')
-            print('\t\t\t5:采集"新闻学院"标签,存储到集合article\n')
-            print('\t\t\t6:采集"政务"标签,存储到集合article\n')
-            print('\t\t\t7:采集"公益"标签,存储到集合article\n')
-            print('\t\t\t8:采集"媒体"标签,存储到集合article\n')
-            print('\t\t\t9:正文等内容保存到本地(D:/newsdownload/article/)\n')
-            print('\t\t\t10:下载图片到本地(D:/newsdownload/img/)\n')
-            TEST = input('请输入你要测试的是哪个选项:\n')
-            if TEST == 1:
-                mainspider()
-            elif TEST == 2:
-                photospider()
-            elif TEST == 3:
-                rankspider()
-            elif TEST == 4:
-                datablogspider()
-            elif TEST == 5:
-                collegespider()
-            elif TEST == 6:
-                govspider()
-            elif TEST == 7:
-                gongyispider()
-            elif TEST == 8:
-                mediaspider()
-            elif TEST == 9:
-                write_to_sys()
-            elif TEST == 10:
-                pic_to_sys()
-
     time.sleep(10)
     print('================================\n')
     print('Spider will be off, wish no bugs or exceptions')

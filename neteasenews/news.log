@@ -12,36 +12,8 @@ neteasenews Spider is working now, give me some patience,ok?
 
 4:数据库处理(文本和图片本地化)
 
-5:网页文本自动化采集系统测试
 ===========================
 
 请输入你的选择:
 			----------------------------
-
-			1:采集富有js渲染的标签页,例如首页,存储到集合mainarticle
-
-			2:采集"图片"标签以及存在别处的图片新闻链接,存储到集合picture
-
-			3:采集"排行"标签,存储到集合article
-
-			4:采集"数读"标签,存储到集合article
-
-			5:采集"新闻学院"标签,存储到集合article
-
-			6:采集"政务"标签,存储到集合article
-
-			7:采集"公益"标签,存储到集合article
-
-			8:采集"媒体"标签,存储到集合article
-
-			9:正文等内容保存到本地(D:/newsdownload/article/)
-
-			10:下载图片到本地(D:/newsdownload/img/)
-
-请输入你要测试的是哪个选项:
-================================
-
-Spider will be off, wish no bugs or exceptions
-			sucess to crawl
-================================
 

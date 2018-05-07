@@ -2,7 +2,7 @@ import json
 import re
 import requests
 from bs4 import BeautifulSoup
-from requests.exceptions import RequestException
+from requests.exceptions import RequestException, InvalidSchema
 from multiprocessing.pool import Pool
 # 引入json文档原始链接,和webdriver配置信息
 from selenium import webdriver
@@ -50,47 +50,43 @@ def basic(url):
 
 
 def no_js_spider():
-    basic_links = []
     nav = top_navs()
     for item in nav:
-        basic_links.append(basic(item))
-    for item_url in basic_links:
-        item_url = item_url.strip().decode()
-        response = requests.get(item_url)
+        response = requests.get(basic(item))
         page = BeautifulSoup(response.text, 'lxml')
         try:
             # 标题
             title = page.findAll('title')[0].get_text()
-            data_blogs = info_datalog(item_url)
-            data_news = info_news(item_url)
-            data_dy = info_dy(item_url)
-            pictures = info_photoview(item_url)
+            data_blogs = info_datalog(basic(item))
+            data_news = info_news(basic(item))
+            data_dy = info_dy(basic(item))
+            pictures = info_photoview(basic(item))
             if title:
                 if data_news:
                     data_new = {
                         'title': title,
-                        'url':  item_url,
+                        'url':  basic(item),
                         'info': data_news
                     }
                     updatedata(data_new, MONGODB_TABLE_1)
                 elif data_blogs:
                     data_blog = {
                         'title': title,
-                        'url': item_url,
+                        'url': basic(item),
                         'info': data_blogs
                     }
                     updatedata(data_blog, MONGODB_TABLE_1)
                 elif data_dy:
                     data_blog = {
                         'title': title,
-                        'url': item_url,
+                        'url': basic(item),
                         'info': data_dy
                     }
                     updatedata(data_blog, MONGODB_TABLE_1)
                 elif pictures:
                     picture = {
                         'title': title,
-                        'url': item_url,
+                        'url': basic(item),
                         'info': pictures
                     }
                     updatedata(picture, MONGODB_TABLE_3)
@@ -213,7 +209,10 @@ def get_all_urls():
 
 # 部署爬取首页等类似布局的标签
 def mainspider():
-    no_js_spider()
+    try:
+        no_js_spider()
+    except InvalidSchema:
+        pass
     url_data = get_all_urls()
     pool = Pool(10)
     pool.map(parse, url_data)
@@ -271,29 +270,6 @@ def photo(tab_url):
     browser.close()
 
 
-# # 针对某些网页为图片浏览形式,正则匹配关键字段,加载为json文档.
-# def json_details(picture_url):
-#     html = get_photo_source(picture_url)
-#     # 正则匹配源代码里面的js代码并且处理并且生成json文档,这里处理操作简单.
-#     pattern_pictures = re.compile(r'<textarea name="gallery-data" style="display:none;">(.*?)</textarea>', re.S)
-#     results = re.search(pattern_pictures, html)
-#     if results:
-#         result_json = json.loads(results.group(1))
-#         if result_json and 'info' in result_json.keys():
-#             item_info = result_json.get('info')
-#             item_pic = result_json.get('list')
-#             pic_list = {
-#                 'title': item_info.get('setname'),
-#                 'source': item_info.get('source'),
-#                 'dutyeditor': item_info.get('dutyeditor'),
-#                 'updatetime': item_info.get('lmodify'),
-#                 'imgsum': item_info.get('imgsum'),
-#                 'pictures': [item.get('img') for item in item_pic],
-#                 'contents': item_info.get('prevue')
-#             }
-#             return pic_list
-
-
 def photospider():
     # 获取所有json文档:
     json_links = get_all_urls()
@@ -324,7 +300,3 @@ def photospider():
                 'http://news.163.com/photo/#Paper']
     for item_url in pic_tabs:
         photo(item_url)
-
-
-if __name__ == '__main__':
-    mainspider()

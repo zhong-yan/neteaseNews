@@ -1,4 +1,6 @@
 import os
+import time
+
 import requests
 import pymongo
 from neteasenews.spider.config import MONGODB_HOST, MONGODB_PORT, MONGODB_DBNAME, MONGODB_TABLE_1, MONGODB_TABLE_2, \
@@ -32,32 +34,38 @@ def updatedata(data, tablename):
 
 
 # 文章下载(纯文或者图文)
+# 目前只能转化文章，若有图文无法下载图片
 def write_to_sys():
+    # 更新频率低
     robot = 'D:/newsdownload/article/'
-    count = 0
+    # 更新频率高
+    robot_ = 'D:/newsdownload/mainarticle/'
     for item in article.find(no_cursor_timeout=True):
         try:
-            # 文字
             if item['info']['contents']:
                 path_txt = robot + str(item['title']) + '.txt'
                 if not os.path.exists(robot):
                     os.makedirs(robot)
                 if not os.path.exists(path_txt):
                     with open(path_txt, 'w', encoding='utf-8') as f:
-                        print('{}\t数据库转化为txt成功'.format(item['title']))
+                        print('{}\t数据库集合article转化为txt成功'.format(item['title']))
                         f.write(str(item['info']['contents']))
-                # 图片
-                if item['info']['pictures']:
-                    for item_img in item['info']['pictures']:
-                        path = robot + str(item['title']) + '.jpg'
-                        html = requests.get(item_img)
-                        html.raise_for_status()
-                        html.encoding = html.apparent_encoding
-                        if not os.path.exists(path):
-                            count += 1
-                            print('正在下载{0}张图片,标题:{1}'.format(count, item['title']))
-                            with open(path, 'wb') as f:
-                                f.write(html.content)
+                        time.sleep(1)
+        except OSError:
+            pass
+    print('mongodb数据库article集合转化TXT完毕')
+    time.sleep(5)
+    for items in mainarticle.find(no_cursor_timeout=True):
+        try:
+            if items['info']['contents']:
+                path_txt = robot_ + str(items['title']) + '.txt'
+                if not os.path.exists(robot_):
+                    os.makedirs(robot_)
+                if not os.path.exists(path_txt):
+                    with open(path_txt, 'w', encoding='utf-8') as f:
+                        print('{}\t数据库集合mainarticle转化为txt成功'.format(items['title']))
+                        f.write(str(items['info']['contents']))
+                        time.sleep(1)
         except OSError:
             pass
 
@@ -82,3 +90,7 @@ def pic_to_sys():
                 print('正在下载{0}张图片,标题:{1}'.format(count, item['title']))
                 with open(path, 'wb') as f:
                     f.write(html.content)
+
+
+if __name__ == '__main__':
+    pic_to_sys()
