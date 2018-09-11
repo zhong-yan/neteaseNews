@@ -2,7 +2,7 @@ import re
 import json
 import requests
 from selenium import webdriver
-from neteasenews.spider.db import updatedata, MONGODB_TABLE_4
+from .db import updatedata, MONGODB_TABLE_4
 from multiprocessing.pool import Pool
 
 

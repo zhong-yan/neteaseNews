@@ -1,13 +1,13 @@
 import time
 # 数读标签
-from neteasenews.spider.datablogSpider import datablogspider
+from .spider.datablogSpider import datablogspider
 # 国内,国际,社会,军事,航空,无人机标签
-from neteasenews.spider.mainSpider import managerspider
+from .spider.mainSpider import managerspider
 # 图片标签
-from neteasenews.spider.photoSpider import photospider
+from .spider.photoSpider import photospider
 # 首页,排行,新闻学院,政务,公益,媒体标签
-from neteasenews.spider.moreSpider import indexspider, rankspider, collegespider, govspider, gongyispider, mediaspider
-from neteasenews.spider.config import *
+from .spider.moreSpider import indexspider, rankspider, collegespider, govspider, gongyispider, mediaspider
+from .spider.config import *
 
 
 # 考虑加入downloads()方法,分类下载到本地?

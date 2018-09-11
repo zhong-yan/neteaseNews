@@ -1,8 +1,8 @@
 import time
-from neteasenews.spider.spider import rankspider, datablogspider, collegespider, govspider, \
+from .spider.spider import rankspider, datablogspider, collegespider, govspider, \
     gongyispider, mediaspider
-from neteasenews.spider.mainspider import mainspider, photospider
-from neteasenews.spider.db import write_to_sys, pic_to_sys
+from .spider.mainspider import mainspider, photospider
+from .spider.db import write_to_sys, pic_to_sys
 import threading
 
 

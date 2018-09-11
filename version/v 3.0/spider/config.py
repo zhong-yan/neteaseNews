@@ -97,6 +97,3 @@ MONGODB_TABLE_2 = 'newsrank'
 MONGODB_TABLE_3 = 'coldpage'
 # 存储图片数据
 MONGODB_TABLE_4 = 'picture'
-
-
-

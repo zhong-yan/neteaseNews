@@ -1,9 +1,8 @@
 import re
 from bs4 import BeautifulSoup
 import requests
-from neteasenews.spider.config import pattern, MONGODB_TABLE_0, \
-    MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs, MONGODB_TABLE_1, RANK_URL
-from neteasenews.spider.mainSpider import chrome_driver, details, updatedata
+from .config import pattern, MONGODB_TABLE_0, MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs, MONGODB_TABLE_1, RANK_URL
+from .mainSpider import chrome_driver, details, updatedata
 
 
 # http://news.163.com/
@@ -25,7 +24,7 @@ def get_college_urls():
     html_college = requests.get(URLs[10])
     pagecollege = BeautifulSoup(html_college.text, 'lxml')
     links = pagecollege.findAll('a')
-    pattern_college = re.compile(r'^http:\/\/dy\.163\.com\/v2\/article\/detail\/\w+.html')
+    pattern_college = re.compile(r'^http:////dy\.163\.com/v2/article/detail/\w+.html')
     colleges_list = []
     for link in links:
         if link.get('href'):
@@ -40,7 +39,7 @@ def get_gov_url():
     html_gov = requests.get(URLs[11])
     page_gov = BeautifulSoup(html_gov.text, 'lxml')
     links = page_gov.findAll('a')
-    pattern_gov = re.compile(r'^http:\/\/gov\.163\.com\/18\/\d+\/\d+\/\w+.html')
+    pattern_gov = re.compile(r'^http:////gov\.163\.com/18/\d+/\d+/\w+.html')
     gov_list = []
     for link in links:
         if link.get('href'):
@@ -55,7 +54,7 @@ def get_gongyi_url():
     html_gongyi = requests.get(URLs[12])
     page_gongyi = BeautifulSoup(html_gongyi.text, 'lxml')
     links = page_gongyi.findAll('a')
-    pattern_gongyi = re.compile(r'^http:\/\/gongyi\.163\.com\/\d+\/\d+\/\d+\/\w+.html')
+    pattern_gongyi = re.compile(r'^http:////gongyi\.163\.com/\d+/\d+/\d+/\w+.html')
     gongyi_list = []
     for link in links:
         if link.get('href'):
@@ -70,7 +69,7 @@ def get_media_url():
     html_media = requests.get(URLs[13])
     page_media = BeautifulSoup(html_media.text, 'lxml')
     links = page_media.findAll('a')
-    pattern_media = re.compile(r'^http:\/\/media\.163\.com\/\d+\/\d+\/\d+\/\w+.html')
+    pattern_media = re.compile(r'^http:////media\.163\.com/\d+/\d+/\d+/\w+.html')
     media_list = []
     for link in links:
         if link.get('href'):
@@ -135,7 +134,7 @@ def mediaspider():
 # http://news.163.com/rank/
 def rankspider():
     links_list = []
-    patterns = re.compile(r'^http:\/\/[\w]+\.163\.com\/\d+\/\d+\/\d+\/\w+.html')
+    patterns = re.compile(r'^http:\\\\[\w]+\.163\.com/d+/d+/d+/w+.html')
     for url in RANK_URL:
         html = requests.get(url)
         htmlpage = BeautifulSoup(html.text, 'lxml')
@@ -154,4 +153,3 @@ def rankspider():
 if __name__ == '__main__':
     mediaspider()
     rankspider()
-

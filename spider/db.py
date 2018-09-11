@@ -2,7 +2,7 @@ import os
 import time
 import requests
 import pymongo
-from neteasenews.spider.config import MONGODB_HOST, MONGODB_PORT, MONGODB_DBNAME, MONGODB_TABLE_1, MONGODB_TABLE_2, \
+from .config import MONGODB_HOST, MONGODB_PORT, MONGODB_DBNAME, MONGODB_TABLE_1, MONGODB_TABLE_2, \
     MONGODB_TABLE_3
 
 

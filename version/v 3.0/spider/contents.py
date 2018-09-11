@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from neteasenews.spider.photospider import json_details
+from .photospider import json_details
 
 # 如何书写剔除带有视频信息的内容,保留正文,这是个值得思考的方法
 # def video():

@@ -1,7 +1,7 @@
 import time
-from spider.coldspider import datablogspider, collegespider, govspider, gongyispider, mediaspider
-from spider.hotspider import hotspider, spider, rankspider, photospider
-from spider.db import write_to_sys, db_img, pic_to_sys
+from .spider.coldspider import datablogspider, collegespider, govspider, gongyispider, mediaspider
+from .spider.hotspider import hotspider, spider, rankspider, photospider
+from .spider.db import write_to_sys, db_img, pic_to_sys
 import threading
 
 

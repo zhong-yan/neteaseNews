@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from neteasenews.spider.config import options, MONGODB_TABLE_6, neteasenews, URLs
-from neteasenews.spider.mainSpider import updatedata
+from .config import options, MONGODB_TABLE_6, neteasenews, URLs
+from .mainSpider import updatedata
 import re
 
 

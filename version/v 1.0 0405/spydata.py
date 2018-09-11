@@ -1,4 +1,4 @@
-from neteasenews.spider.config import *
+from .spider.config import *
 
 timeout = 1
 # for i in air.distinct('articleUrl'):

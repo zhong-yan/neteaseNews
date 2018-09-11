@@ -1,9 +1,9 @@
 import time
-from neteasenews.spider.coldspider import datablogspider, collegespider, govspider, gongyispider, mediaspider
-from neteasenews.spider.hotspider import hotspider, spider
-from neteasenews.spider.rankspider import rankspider
-from neteasenews.spider.photospider import photospider
-from neteasenews.spider.db import write_to_sys
+from .spider.coldspider import datablogspider, collegespider, govspider, gongyispider, mediaspider
+from .spider.hotspider import hotspider, spider
+from .spider.rankspider import rankspider
+from .spider.photospider import photospider
+from .spider.db import write_to_sys
 import threading
 
 

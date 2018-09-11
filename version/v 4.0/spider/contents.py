@@ -3,7 +3,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from config import options
+from .config import options
 
 
 # 如何书写剔除带有视频信息的内容,保留正文,这是个值得思考的方法

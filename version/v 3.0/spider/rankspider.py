@@ -3,8 +3,8 @@ import time
 import requests
 import re
 from bs4 import BeautifulSoup
-from neteasenews.spider.db import MONGODB_TABLE_2, updatedata
-from neteasenews.spider.contents import info_photoview, info_datalog, info_news
+from .db import MONGODB_TABLE_2, updatedata
+from .contents import info_photoview, info_datalog, info_news
 from multiprocessing.pool import Pool
 from selenium import webdriver
 

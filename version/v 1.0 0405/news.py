@@ -1,8 +1,10 @@
-from neteasenews.spider.config import *
-from neteasenews.spider.mainSpider import *
-from neteasenews.spider.datablogSpider import *
-from neteasenews.spider.moreSpider import *
-from neteasenews.spider.download import *
+
+# from .spider.config import *
+# from version import *
+# from .spider.mainSpider import *
+# from .spider.datablogSpider import *
+# from .spider.moreSpider import *
+# from .spider.download import *
 
 
 # 部署爬虫唯一出入口main()方法

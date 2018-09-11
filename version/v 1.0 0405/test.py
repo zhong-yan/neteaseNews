@@ -1,6 +1,6 @@
-import requests
-from bs4 import BeautifulSoup
-import datetime as d
+# import requests
+# from bs4 import BeautifulSoup
+# import datetime as d
 
 # print(d.datetime.now().strftime("%Y.%m.%d-%H:%M:%S"))
 #
@@ -37,4 +37,3 @@ import datetime as d
 # print(nexttime)
 # if nowtime == nexttime:
 #     p()
-

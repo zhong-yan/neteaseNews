@@ -3,9 +3,9 @@ import re
 from bs4 import BeautifulSoup
 import requests
 from requests.exceptions import RequestException
-from neteasenews.spider.db import MONGODB_TABLE_3, updatedata
-from neteasenews.spider.config import URLs
-from neteasenews.spider.contents import info_dy, info_photoview, info_news, info_datalog
+from .db import updatedata
+from .config import URLs, MONGODB_TABLE_3
+from .contents import info_dy, info_photoview, info_news, info_datalog
 
 
 # 数读标签:datablogspider()

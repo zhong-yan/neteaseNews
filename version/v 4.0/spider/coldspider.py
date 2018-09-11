@@ -3,9 +3,9 @@ import re
 from bs4 import BeautifulSoup
 import requests
 from requests.exceptions import RequestException
-from db import MONGODB_TABLE_2, updatedata
-from config import URLs
-from contents import info_dy, info_photoview, info_news, info_datalog
+from .db import updatedata
+from .config import URLs, MONGODB_TABLE_2
+from .contents import info_dy, info_photoview, info_news, info_datalog
 
 
 # 数读标签:datablogspider()

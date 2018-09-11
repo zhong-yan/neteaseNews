@@ -6,11 +6,11 @@ from requests.exceptions import RequestException, InvalidSchema
 from multiprocessing.pool import Pool
 # 引入json文档原始链接,和webdriver配置信息
 from selenium import webdriver
-from neteasenews.spider.config import JSON_INDEX_URLS, URLs, MONGODB_TABLE_1, MONGODB_TABLE_2, MONGODB_TABLE_3
+from .config import JSON_INDEX_URLS, URLs, MONGODB_TABLE_1, MONGODB_TABLE_2, MONGODB_TABLE_3
 # 处理跳转信息的方法,网易正文, 数读平台, 图集, 网易号
-from neteasenews.spider.contents import info_datalog, info_news, info_dy, info_photoview, options, json_details
+from .contents import info_datalog, info_news, info_dy, info_photoview, options, json_details
 # 数据库处理方法,包括更新数据库
-from neteasenews.spider.db import updatedata
+from .db import updatedata
 
 
 # 获取首页里面的头部导航链接.

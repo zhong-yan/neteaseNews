@@ -5,9 +5,9 @@ from bs4 import BeautifulSoup
 import requests
 from requests.exceptions import RequestException
 from selenium import webdriver
-from neteasenews.spider.db import MONGODB_TABLE_1, MONGODB_TABLE_3, updatedata
-from neteasenews.spider.config import URLs
-from neteasenews.spider.contents import info_dy, info_photoview, info_news, info_datalog, options
+from .db import MONGODB_TABLE_1, MONGODB_TABLE_3, updatedata
+from .config import URLs
+from .contents import info_dy, info_photoview, info_news, info_datalog, options
 
 
 # 排行标签:rankspider()

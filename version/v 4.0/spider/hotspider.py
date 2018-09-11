@@ -5,11 +5,11 @@ from requests.exceptions import RequestException
 from bs4 import BeautifulSoup
 from multiprocessing.pool import Pool
 # 引入json文档原始链接,和webdriver配置信息
-from config import JSON_INDEX_URLS, options
+from .config import JSON_INDEX_URLS, options
 # 处理跳转信息的方法,网易正文, 数读平台, 图集, 网易号
-from contents import info_datalog, info_news, info_photoview, info_dy
+from .contents import info_datalog, info_news, info_photoview, info_dy
 # 数据库处理方法,包括更新数据库
-from db import updatedata, MONGODB_TABLE_1, MONGODB_TABLE_3
+from .db import updatedata, MONGODB_TABLE_1, MONGODB_TABLE_3
 from selenium import webdriver
 
 

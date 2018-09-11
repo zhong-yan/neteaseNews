@@ -7,8 +7,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import WebDriverException
-from neteasenews.spider.photoSpider import json_details
-from neteasenews.spider.config import options, neteasenews, MONGODB_TABLE_9, MONGODB_TABLE_3, MONGODB_TABLE_4, \
+from .photoSpider import json_details
+from .config import options, neteasenews, MONGODB_TABLE_9, MONGODB_TABLE_3, MONGODB_TABLE_4, \
     MONGODB_TABLE_5, MONGODB_TABLE_7, MONGODB_TABLE_8, URLs
 import datetime
 from multiprocessing.pool import Pool
@@ -194,7 +194,7 @@ def details(url):
 原因: 生成了空字典
 解决方法: 判断非空字典
 2. 如何处理详情页的视频问题?
-解决方法: 我他妈怎么知道 我操
+解决方法: 
 '''
 
 

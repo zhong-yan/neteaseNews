@@ -1,9 +1,8 @@
 import re
 from bs4 import BeautifulSoup
 import requests
-from neteasenews.spider.config import MONGODB_TABLE_0, \
-    MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs, MONGODB_TABLE_1, RANK_URL, neteasenews
-from neteasenews.spider.mainSpider import chrome_driver, details, updatedata
+from .config import MONGODB_TABLE_0, MONGODB_TABLE_10, MONGODB_TABLE_11, MONGODB_TABLE_12, MONGODB_TABLE_13, URLs, MONGODB_TABLE_1, RANK_URL, neteasenews
+from .mainSpider import chrome_driver, details, updatedata
 from multiprocessing.pool import Pool
 
 # database config

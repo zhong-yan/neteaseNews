@@ -21,7 +21,7 @@ URLs = ['http://news.163.com/',
         'http://gongyi.163.com/',
         'http://media.163.com/']
 
-pattern = re.compile(r'^http:\/\/[\w]+\.163\.com\/18\/\d+\/\d+\/\w+.html')
+pattern = re.compile(r'^http:////[\w]+\.163\.com/18/\d+/\d+/\w+.html')
 
 RANK_URL = ['http://news.163.com/special/0001386F/rank_news.html',
             'http://news.163.com/special/0001386F/rank_ent.html',
@@ -122,4 +122,3 @@ options.add_argument('--headless')
 
 # 现在时间:
 systemtime = datetime.datetime.now().strftime("%Y.%m.%d-%H:%M:%S")
-

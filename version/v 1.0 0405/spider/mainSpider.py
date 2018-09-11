@@ -10,7 +10,7 @@ from selenium.common.exceptions import WebDriverException
 from multiprocessing import Pool
 # 开启startmap方法库
 # from itertools import *
-from neteasenews.spider.config import options, systemtime, neteasenews, URLs, MONGODB_TABLE_3, MONGODB_TABLE_7, \
+from .config import options, systemtime, neteasenews, URLs, MONGODB_TABLE_3, MONGODB_TABLE_7, \
     MONGODB_TABLE_4, MONGODB_TABLE_8, MONGODB_TABLE_5, MONGODB_TABLE_9
 
 
@@ -84,47 +84,61 @@ def details(url):
     # 处理bug1,如果文章内有视频,正文就显示为None,尽管在其他标签里面,但是每次都试图去改,收益不大.(留作记录)
     try:
         title_more = response.select('title')[0].get_text().split('_')[0]
-    except IndexError:
-        print('该文章源代码head标签里没有title标签,暂时没找到很好的方法.')
-        pass
-    article = response.select('.post_text')
-    source = response.select('#ne_article_source')
-    author = response.select('.ep-editor')
-    pics = response.select('#endText > p.f_center > img')
-    # js控制的轮播图star
-    is_imgs = response.select('.main')
-    img_tags = response.select('.tag')
-    img_overviews = response.select('.overview > p')
-    # js控制的轮播图end
-    publishtime = response.select('.post_time_source')
-    # 开始处理图片,现在只要url,因为是js控制,现在无法找齐全url,暂时不做处理....
-    # 博客架构:
-    pics_in_blog = response.select('#endText > p > a.gallery.f_center > img')
-    contents = response.select('.main-content')
-    publishtimes_blog = response.select('#ptime')
-    comments = response.select('#endpageUrl1 > a > span.js-tiejoincount')
-    #
-    # 如果存在这个.main 代表是图集,分析网页而来的
-    if is_imgs:
-        for img_tag, img_overview in zip(img_tags, img_overviews):
-            data = {
-                # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
-                'title': title_more,
-                'url': url,
-                'author': None,
-                'publishTime': None,
-                'source': None,
-                'tag_pics': [pic for pic in img_tag.stripped_strings][:0],
-                'pictures': None,
-                'desc_pictures': img_overview.get_text(),
-                'contents': None
-            }
-            return data
-    # 正文含有图片
-    # 如果.f_center存在 代表文中有图片
-    if pics:
+        article = response.select('.post_text')
+        source = response.select('#ne_article_source')
+        author = response.select('.ep-editor')
+        pics = response.select('#endText > p.f_center > img')
+        # js控制的轮播图star
+        is_imgs = response.select('.main')
+        img_tags = response.select('.tag')
+        img_overviews = response.select('.overview > p')
+        # js控制的轮播图end
+        publishtime = response.select('.post_time_source')
+        # 开始处理图片,现在只要url,因为是js控制,现在无法找齐全url,暂时不做处理....
+        # 博客架构:
+        pics_in_blog = response.select('#endText > p > a.gallery.f_center > img')
+        contents = response.select('.main-content')
+        publishtimes_blog = response.select('#ptime')
+        comments = response.select('#endpageUrl1 > a > span.js-tiejoincount')
+        #
+        # 如果存在这个.main 代表是图集,分析网页而来的
+        if is_imgs:
+            for img_tag, img_overview in zip(img_tags, img_overviews):
+                data = {
+                    # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
+                    'title': title_more,
+                    'url': url,
+                    'author': None,
+                    'publishTime': None,
+                    'source': None,
+                    'tag_pics': [pic for pic in img_tag.stripped_strings][:0],
+                    'pictures': None,
+                    'desc_pictures': img_overview.get_text(),
+                    'contents': None
+                }
+                return data
+        # 正文含有图片
+        # 如果.f_center存在 代表文中有图片
+        if pics:
+            for art, sou, au, ptime in zip(article, source, author, publishtime):
+                # 格式化时间,记得group(0),不然返回的是<_sre.SRE_Match object; span=(12, 32), match=' 2018-04-04 08:38:46' 苦逼的废物
+                format_time = re.search(r'(\d+-\d+-\d+\s\d+:\d+:\d+)', ptime.get_text()).group(0)
+                data = {
+                    # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
+                    'title': title_more,
+                    'url': url,
+                    'author': au.get_text().split('：')[1],
+                    'publishTime': format_time,
+                    'source': sou.get_text(),
+                    'tag_pics': None,
+                    'pictures': [pic.get('src') for pic in pics],
+                    'desc_pictures': None,
+                    'contents': [page for page in art.stripped_strings][:-2]
+                }
+                return data
+        # 正文没有图片
+        # 图片什么的都没有,只有空白的文字,如同冰冷的暮色,这么苍凉无助
         for art, sou, au, ptime in zip(article, source, author, publishtime):
-            # 格式化时间,记得group(0),不然返回的是<_sre.SRE_Match object; span=(12, 32), match=' 2018-04-04 08:38:46' 苦逼的废物
             format_time = re.search(r'(\d+-\d+-\d+\s\d+:\d+:\d+)', ptime.get_text()).group(0)
             data = {
                 # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
@@ -134,42 +148,28 @@ def details(url):
                 'publishTime': format_time,
                 'source': sou.get_text(),
                 'tag_pics': None,
-                'pictures': [pic.get('src') for pic in pics],
+                'pictures': None,
                 'desc_pictures': None,
                 'contents': [page for page in art.stripped_strings][:-2]
             }
             return data
-    # 正文没有图片
-    # 图片什么的都没有,只有空白的文字,如同冰冷的暮色,这么苍凉无助
-    for art, sou, au, ptime in zip(article, source, author, publishtime):
-        format_time = re.search(r'(\d+-\d+-\d+\s\d+:\d+:\d+)', ptime.get_text()).group(0)
-        data = {
-            # 如果需要删除多余的空白或者换行符,stripped_strings,切片处理多余的来源和作者信息
-            'title': title_more,
-            'url': url,
-            'author': au.get_text().split('：')[1],
-            'publishTime': format_time,
-            'source': sou.get_text(),
-            'tag_pics': None,
-            'pictures': None,
-            'desc_pictures': None,
-            'contents': [page for page in art.stripped_strings][:-2]
-        }
-        return data
-    if publishtimes_blog and contents:
-        for content, publishtime, comment in zip(contents, publishtimes_blog, comments):
-            data = {
-                'title': title_more,
-                'url': url,
-                'author': None,
-                'source': None,
-                'comments': comment.get_text(),
-                'publishTime_blog': None,
-                'publishTime_news': publishtime.get_text(),
-                'pictures': [pic.get('src') for pic in pics_in_blog],
-                'contents': [item for item in content.stripped_strings]
-            }
-            return data
+        if publishtimes_blog and contents:
+            for content, publishtime, comment in zip(contents, publishtimes_blog, comments):
+                data = {
+                    'title': title_more,
+                    'url': url,
+                    'author': None,
+                    'source': None,
+                    'comments': comment.get_text(),
+                    'publishTime_blog': None,
+                    'publishTime_news': publishtime.get_text(),
+                    'pictures': [pic.get('src') for pic in pics_in_blog],
+                    'contents': [item for item in content.stripped_strings]
+                }
+                return data
+    except IndexError:
+        print('该文章源代码head标签里没有title标签,暂时没找到很好的方法.')
+        pass
 
 
 '''
@@ -177,7 +177,7 @@ def details(url):
 原因: 生成了空字典
 解决方法: 判断非空字典
 2. 如何处理详情页的视频问题?
-解决方法: 我他妈怎么知道 我操你妈逼的
+解决方法: 
 '''
 
 

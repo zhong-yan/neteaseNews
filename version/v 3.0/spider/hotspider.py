@@ -1,10 +1,10 @@
 import json
 import requests
 from requests.exceptions import RequestException
-from neteasenews.spider.config import JSON_INDEX_URLS
-from neteasenews.spider.contents import info_news, info_datalog, info_dy
+from .config import JSON_INDEX_URLS
+from .contents import info_news, info_datalog, info_dy
 from multiprocessing.pool import Pool
-from neteasenews.spider.db import updatedata, MONGODB_TABLE_1
+from .db import updatedata, MONGODB_TABLE_1
 
 
 # 爬取首页要闻,广州,社会,国内,国际,独家,军事,财经,科技,体育,娱乐,时尚,汽车,房产,航空,健康,无人机
